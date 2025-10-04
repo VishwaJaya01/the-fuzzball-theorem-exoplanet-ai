@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: the-fuzzball-theorem-exoplanet-ai-fe/package-lock.json
 
       # This step specifically caches the Next.js build output
       - name: Cache Next.js build
@@ -39,6 +39,7 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
 
       - name: Install dependencies
+        working-directory: ./the-fuzzball-theorem-exoplanet-ai-fe
         run: npm ci
 
       - name: Run ESLint

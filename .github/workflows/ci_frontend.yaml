@@ -43,9 +43,11 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
+        working-directory: ./the-fuzzball-theorem-exoplanet-ai-fe
         run: npm run lint
 
       - name: Run Build Command
+        working-directory: ./the-fuzzball-theorem-exoplanet-ai-fe
         run: npm run build
         env:
           # Add any environment variables needed for your CodeRush project

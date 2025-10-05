@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "https://jayasankha-exo-orbit-lab.hf.space";
+const BACKEND_API_URL = process.env.BACKEND_API_URL || process.env.BACKEND_API_URL_PROD || "";
+
 
 /**
  * Health check endpoint that proxies the FastAPI backend status

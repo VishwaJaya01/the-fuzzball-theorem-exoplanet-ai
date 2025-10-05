@@ -7,16 +7,25 @@ import InputPanel from '@/components/InputPanel';
 import StatusAlerts from '@/components/StatusAlerts';
 import ResultsCard from '@/components/ResultsCard';
 import StarMetaCard from '@/components/StarMetaCard';
+import PlotsPanel from '@/components/PlotsPanel';
 import PlanetSimulation from '@/components/PlanetSimulation';
 import WhyPanel from '@/components/WhyPanel';
 import ActionsMenu from '@/components/ActionsMenu';
 import HistoryCompare from '@/components/HistoryCompare';
-import type { PredictResult, HistoryItem } from '@/lib/types';
+import { predictTransits } from '@/lib/api';
+import type { PredictResult, HistoryItem, PredictPayload } from '@/lib/types';
 
 export default function Home() {
   const [result, setResult] = useState<PredictResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+
+  const handlePredict = async (payload: PredictPayload) => {
+    setIsAnalyzing(true);
+    const result = await predictTransits(payload);
+    handleAnalysisComplete(result);
+    return result;
+  };
 
   const handleAnalysisComplete = (analysisResult: PredictResult) => {
     setResult(analysisResult);
@@ -61,6 +70,7 @@ export default function Home() {
         <section id="input" className="scroll-mt-20">
           <InputPanel
             onAnalysisComplete={handleAnalysisComplete}
+            onPredict={handlePredict}
           />
         </section>
 
@@ -86,7 +96,7 @@ export default function Home() {
             <section id="actions" className="scroll-mt-20">
               <ActionsMenu 
                 result={result} 
-                apiUrl={process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
+                apiUrl={process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:7860'}
               />
             </section>
 
@@ -120,7 +130,7 @@ export default function Home() {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                     <span>🪐</span> Detection Results
                   </h2>
-                  <ResultsCard detections={result.data.detections} />
+                  <ResultsCard result={result} detections={result.data.detections} />
                 </div>
               </section>
             )}
@@ -148,15 +158,16 @@ export default function Home() {
             )}
 
             {/* Light Curve Plots */}
-            {result.data.lightCurve && (
+            {result.data.lightCurve && result.data.lightCurve.time?.length && (
               <section id="plots" className="scroll-mt-20">
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                     <span>📊</span> Light Curve Analysis
                   </h2>
-                  <div className="text-gray-600 dark:text-gray-400 text-sm">
-                    Light curve plots will be displayed here
-                  </div>
+                  <PlotsPanel
+                    raw={result.data.lightCurve}
+                    detections={result.data.detections}
+                  />
                 </div>
               </section>
             )}
@@ -290,3 +301,4 @@ export default function Home() {
     </div>
   );
 }
+

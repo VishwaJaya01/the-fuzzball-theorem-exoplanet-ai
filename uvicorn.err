@@ -1,0 +1,526 @@
+INFO:     Will watch for changes in these directories: ['C:\\Users\\Jayasankha\\Desktop\\Projects\\NASA Space Apps 2025\\the-fuzzball-theorem-exoplanet-ai\\backend']
+INFO:     Uvicorn running on http://0.0.0.0:7860 (Press CTRL+C to quit)
+INFO:     Started reloader process [20304] using WatchFiles
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\lightkurve\prf\__init__.py:7: UserWarning: Warning: the tpfmodel submodule is not available without oktopus installed, which requires a current version of autograd. See #1452 for details.
+  warnings.warn(
+INFO:     Started server process [1728]
+INFO:     Waiting for application startup.
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator ExtraTreeRegressor from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator IsolationForest from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator QuantileTransformer from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:     Application startup complete.
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PredictionResponse
+lightcurve
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PredictionResponse
+lightcurve
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PredictionResponse
+lightcurve
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PredictionResponse
+lightcurve
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PredictionResponse
+lightcurve
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 1 validation error for PredictionResponse
+lightcurve
+  Extra inputs are not permitted [type=extra_forbidden, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/extra_forbidden
+WARNING:  WatchFiles detected changes in 'app\schemas.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1728]
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\lightkurve\prf\__init__.py:7: UserWarning: Warning: the tpfmodel submodule is not available without oktopus installed, which requires a current version of autograd. See #1452 for details.
+  warnings.warn(
+Process SpawnProcess-2:
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\multiprocessing\process.py", line 314, in _bootstrap
+    self.run()
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\server.py", line 65, in run
+    return asyncio.run(self.serve(sockets=sockets))
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\server.py", line 69, in serve
+    await self._serve(sockets)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\server.py", line 76, in _serve
+    config.load()
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\config.py", line 434, in load
+    self.loaded_app = import_from_string(self.app)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\importlib\__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 992, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\__init__.py", line 1, in <module>
+    from .main import APP
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 15, in <module>
+    from app.schemas import (
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\schemas.py", line 55
+    class LightcurveSeries(BaseModel):
+    ^^^^^
+IndentationError: expected an indented block after class definition on line 53
+WARNING:  WatchFiles detected changes in 'app\schemas.py'. Reloading...
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\lightkurve\prf\__init__.py:7: UserWarning: Warning: the tpfmodel submodule is not available without oktopus installed, which requires a current version of autograd. See #1452 for details.
+  warnings.warn(
+INFO:     Started server process [20612]
+INFO:     Waiting for application startup.
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator ExtraTreeRegressor from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator IsolationForest from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator QuantileTransformer from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:     Application startup complete.
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\utils\validation.py:2749: UserWarning: X does not have valid feature names, but QuantileTransformer was fitted with feature names
+  warnings.warn(
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\protocols\http\httptools_impl.py", line 401, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\uvicorn\middleware\proxy_headers.py", line 70, in __call__
+    return await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\applications.py", line 1133, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\cors.py", line 85, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 123, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 109, in app
+    response = await f(request)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 387, in app
+    raw_response = await run_endpoint_function(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\fastapi\routing.py", line 290, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\starlette\concurrency.py", line 38, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\to_thread.py", line 33, in run_sync
+    return await get_asynclib().run_sync_in_worker_thread(
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 877, in run_sync_in_worker_thread
+    return await future
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\anyio\_backends\_asyncio.py", line 807, in run
+    result = context.run(func, *args)
+  File "C:\Users\Jayasankha\Desktop\Projects\NASA Space Apps 2025\the-fuzzball-theorem-exoplanet-ai\backend\app\main.py", line 67, in predict_by_tic
+    return PredictionResponse(**payload)
+  File "C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\pydantic\main.py", line 253, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 3 validation errors for PredictionResponse
+lightcurve.artifact_dir
+  Field required [type=missing, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+lightcurve.feature_names_version
+  Field required [type=missing, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+lightcurve.runtime_ms
+  Field required [type=missing, input_value={'time': [1711.3621370262... 0.0002699948090594262]}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/missing
+WARNING:  WatchFiles detected changes in 'app\schemas.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [20612]
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\lightkurve\prf\__init__.py:7: UserWarning: Warning: the tpfmodel submodule is not available without oktopus installed, which requires a current version of autograd. See #1452 for details.
+  warnings.warn(
+INFO:     Started server process [18840]
+INFO:     Waiting for application startup.
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator ExtraTreeRegressor from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator IsolationForest from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\Jayasankha\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\base.py:442: InconsistentVersionWarning: Trying to unpickle estimator QuantileTransformer from version 1.6.1 when using version 1.7.1. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+INFO:     Application startup complete.

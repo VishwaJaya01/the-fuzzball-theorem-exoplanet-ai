@@ -90,7 +90,7 @@ export default function Home() {
       {/* Header Section */}
       <Header
         onOpenAbout={() => console.log("About clicked")}
-        onUploadClick={() => console.log("Upload clicked")}
+        onUploadClick={() => (window as any).triggerFileUpload?.()}
       />
 
       {/* Main Content */}
@@ -101,6 +101,7 @@ export default function Home() {
             onAnalysisComplete={handleAnalysisComplete}
             onPredict={handlePredict}
             onUploadFile={handleUploadFile}
+            onTriggerUpload={() => {}}
             examples={[
               {
                 id: "tic-1003831",

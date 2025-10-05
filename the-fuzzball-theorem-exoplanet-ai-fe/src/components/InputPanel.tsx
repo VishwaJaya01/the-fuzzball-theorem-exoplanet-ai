@@ -1,55 +1,78 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, ChangeEvent } from 'react';
-import Papa from 'papaparse';
-import type { 
-  InputPanelProps, 
-  PredictPayload, 
+import React, { useState, useRef, ChangeEvent } from "react";
+import Papa from "papaparse";
+import type {
+  InputPanelProps,
+  PredictPayload,
   UploadPreview,
-  Example 
-} from '@/lib/types';
+  Example,
+} from "@/lib/types";
 
-function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
+function InputPanel({
+  onPredict,
+  onUploadFile,
+  onTriggerUpload,
+  examples,
+}: InputPanelProps) {
   // State management
-  const [ticId, setTicId] = useState('');
-  const [sector, setSector] = useState<number | ''>('');
-  const [uploadPreview, setUploadPreview] = useState<UploadPreview | null>(null);
+  const [ticId, setTicId] = useState("");
+  const [sector, setSector] = useState<number | "">("");
+  const [uploadPreview, setUploadPreview] = useState<UploadPreview | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingTic, setIsFetchingTic] = useState(false);
-  const [activeTab, setActiveTab] = useState<'tic' | 'csv'>('tic');
+  const [activeTab, setActiveTab] = useState<"tic" | "csv">("tic");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Trigger file upload from external button
+  const triggerFileUpload = () => {
+    setActiveTab("csv");
+    setTimeout(() => fileInputRef.current?.click(), 100);
+  };
+
+  // Expose trigger to parent component
+  React.useEffect(() => {
+    if (onTriggerUpload) {
+      // Store the trigger function reference
+      (window as any).triggerFileUpload = triggerFileUpload;
+    }
+  }, [onTriggerUpload]);
+
   // Validate CSV schema
-  const validateCsvData = (data: Array<Record<string, string | number | null>>): { 
-    isValid: boolean; 
-    errors: string[] 
+  const validateCsvData = (
+    data: Array<Record<string, string | number | null>>
+  ): {
+    isValid: boolean;
+    errors: string[];
   } => {
     const errors: string[] = [];
-    
+
     if (!data || data.length === 0) {
-      errors.push('CSV file is empty');
+      errors.push("CSV file is empty");
       return { isValid: false, errors };
     }
 
     const firstRow = data[0];
     const columns = Object.keys(firstRow);
-    
+
     // Check for required columns
-    if (!columns.includes('time')) {
+    if (!columns.includes("time")) {
       errors.push('Missing required column: "time"');
     }
-    if (!columns.includes('flux')) {
+    if (!columns.includes("flux")) {
       errors.push('Missing required column: "flux"');
     }
 
     // Validate data types
     for (let i = 0; i < Math.min(10, data.length); i++) {
       const row = data[i];
-      if (typeof row.time !== 'number' || isNaN(row.time as number)) {
+      if (typeof row.time !== "number" || isNaN(row.time as number)) {
         errors.push(`Invalid time value at row ${i + 1}`);
         break;
       }
-      if (typeof row.flux !== 'number' || isNaN(row.flux as number)) {
+      if (typeof row.flux !== "number" || isNaN(row.flux as number)) {
         errors.push(`Invalid flux value at row ${i + 1}`);
         break;
       }
@@ -70,7 +93,9 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       dynamicTyping: true,
       skipEmptyLines: true,
       complete: async (results) => {
-        const data = results.data as Array<Record<string, string | number | null>>;
+        const data = results.data as Array<
+          Record<string, string | number | null>
+        >;
         const validation = validateCsvData(data);
         const columns = Object.keys(data[0] || {});
 
@@ -90,7 +115,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
           try {
             await onUploadFile(file);
           } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error("Error uploading file:", error);
           }
         }
 
@@ -119,12 +144,12 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       const payload: PredictPayload = {
         ticId,
         sector: sector || undefined,
-        source: 'tic',
+        source: "tic",
       };
 
       await onPredict(payload);
     } catch (error) {
-      console.error('Error fetching TIC data:', error);
+      console.error("Error fetching TIC data:", error);
     } finally {
       setIsFetchingTic(false);
     }
@@ -133,30 +158,30 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
   // Handle predict button click
   const handlePredict = async () => {
     if (!onPredict) return;
-    
+
     setIsLoading(true);
     try {
       let payload: PredictPayload;
 
-      if (activeTab === 'tic' && ticId) {
+      if (activeTab === "tic" && ticId) {
         payload = {
           ticId,
           sector: sector || undefined,
-          source: 'tic',
+          source: "tic",
         };
-      } else if (activeTab === 'csv' && uploadPreview?.isValid) {
+      } else if (activeTab === "csv" && uploadPreview?.isValid) {
         // Convert preview data to the expected format
         const csvData = {
-          time: uploadPreview.preview.map(row => row.time as number),
-          flux: uploadPreview.preview.map(row => row.flux as number),
-          flux_err: uploadPreview.columns.includes('flux_err') 
-            ? uploadPreview.preview.map(row => row.flux_err as number)
+          time: uploadPreview.preview.map((row) => row.time as number),
+          flux: uploadPreview.preview.map((row) => row.flux as number),
+          flux_err: uploadPreview.columns.includes("flux_err")
+            ? uploadPreview.preview.map((row) => row.flux_err as number)
             : undefined,
         };
 
         payload = {
           csvData,
-          source: 'csv',
+          source: "csv",
         };
       } else {
         return;
@@ -164,7 +189,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
 
       await onPredict(payload);
     } catch (error) {
-      console.error('Error predicting:', error);
+      console.error("Error predicting:", error);
     } finally {
       setIsLoading(false);
     }
@@ -172,29 +197,31 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
 
   // Handle example selection
   const handleExampleClick = (example: Example) => {
-    if (example.type === 'tic' && example.ticId) {
+    if (example.type === "tic" && example.ticId) {
       setTicId(example.ticId);
-      setSector(example.sector || '');
-      setActiveTab('tic');
-    } else if (example.type === 'csv' && example.fileUrl) {
+      setSector(example.sector || "");
+      setActiveTab("tic");
+    } else if (example.type === "csv" && example.fileUrl) {
       // Fetch and load example CSV
       fetch(example.fileUrl)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], `${example.label}.csv`, { type: 'text/csv' });
+        .then((res) => res.blob())
+        .then((blob) => {
+          const file = new File([blob], `${example.label}.csv`, {
+            type: "text/csv",
+          });
           const fakeEvent = {
-            target: { files: [file] }
+            target: { files: [file] },
           } as unknown as ChangeEvent<HTMLInputElement>;
           handleFileChange(fakeEvent);
-          setActiveTab('csv');
+          setActiveTab("csv");
         });
     }
   };
 
   // Check if predict button should be enabled
   const isPredictEnabled = () => {
-    if (activeTab === 'tic') {
-      return ticId.trim() !== '';
+    if (activeTab === "tic") {
+      return ticId.trim() !== "";
     }
     return uploadPreview?.isValid || false;
   };
@@ -214,21 +241,21 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       {/* Tabs */}
       <div className="flex border-b border-gray-200 dark:border-gray-700">
         <button
-          onClick={() => setActiveTab('tic')}
+          onClick={() => setActiveTab("tic")}
           className={`px-6 py-3 font-medium text-sm transition-colors ${
-            activeTab === 'tic'
-              ? 'border-b-2 border-blue-600 text-blue-600 dark:text-blue-400'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            activeTab === "tic"
+              ? "border-b-2 border-blue-600 text-blue-600 dark:text-blue-400"
+              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
           }`}
         >
           TIC ID
         </button>
         <button
-          onClick={() => setActiveTab('csv')}
+          onClick={() => setActiveTab("csv")}
           className={`px-6 py-3 font-medium text-sm transition-colors ${
-            activeTab === 'csv'
-              ? 'border-b-2 border-blue-600 text-blue-600 dark:text-blue-400'
-              : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+            activeTab === "csv"
+              ? "border-b-2 border-blue-600 text-blue-600 dark:text-blue-400"
+              : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
           }`}
         >
           Upload CSV
@@ -236,7 +263,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       </div>
 
       {/* TIC Input Tab */}
-      {activeTab === 'tic' && (
+      {activeTab === "tic" && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* TIC ID Input */}
@@ -263,7 +290,9 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
               </label>
               <select
                 value={sector}
-                onChange={(e) => setSector(e.target.value ? Number(e.target.value) : '')}
+                onChange={(e) =>
+                  setSector(e.target.value ? Number(e.target.value) : "")
+                }
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
                          bg-white dark:bg-gray-700 text-gray-900 dark:text-white
                          focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -309,7 +338,12 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -326,7 +360,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       )}
 
       {/* CSV Upload Tab */}
-      {activeTab === 'csv' && (
+      {activeTab === "csv" && (
         <div className="space-y-4">
           {/* Upload Area */}
           <div
@@ -389,18 +423,23 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
                       {uploadPreview.fileName}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {uploadPreview.rowCount} rows • {uploadPreview.columns.join(', ')}
+                      {uploadPreview.rowCount} rows •{" "}
+                      {uploadPreview.columns.join(", ")}
                     </p>
                   </div>
                 </div>
                 {uploadPreview.isValid ? (
-                  <span className="px-2 py-1 text-xs font-medium text-green-700 dark:text-green-400 
-                                 bg-green-100 dark:bg-green-900/30 rounded">
+                  <span
+                    className="px-2 py-1 text-xs font-medium text-green-700 dark:text-green-400 
+                                 bg-green-100 dark:bg-green-900/30 rounded"
+                  >
                     Valid
                   </span>
                 ) : (
-                  <span className="px-2 py-1 text-xs font-medium text-red-700 dark:text-red-400 
-                                 bg-red-100 dark:bg-red-900/30 rounded">
+                  <span
+                    className="px-2 py-1 text-xs font-medium text-red-700 dark:text-red-400 
+                                 bg-red-100 dark:bg-red-900/30 rounded"
+                  >
                     Invalid
                   </span>
                 )}
@@ -441,15 +480,18 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                       {uploadPreview.preview.map((row, idx) => (
-                        <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <tr
+                          key={idx}
+                          className="hover:bg-gray-50 dark:hover:bg-gray-700/50"
+                        >
                           {uploadPreview.columns.map((col) => (
                             <td
                               key={col}
                               className="px-3 py-2 text-gray-600 dark:text-gray-400 font-mono"
                             >
-                              {typeof row[col] === 'number'
+                              {typeof row[col] === "number"
                                 ? (row[col] as number).toFixed(6)
-                                : String(row[col] ?? '')}
+                                : String(row[col] ?? "")}
                             </td>
                           ))}
                         </tr>
@@ -480,8 +522,13 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
                          flex items-center gap-1.5"
                 title={example.description}
               >
-                {example.type === 'tic' ? (
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {example.type === "tic" ? (
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -490,7 +537,12 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
                     />
                   </svg>
                 ) : (
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -539,7 +591,12 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
             </>
           ) : (
             <>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

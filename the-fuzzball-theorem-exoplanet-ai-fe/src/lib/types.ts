@@ -10,7 +10,7 @@ export interface ApiStatus {
 }
 
 export interface HealthCheckResponse {
-  status: 'ok' | 'error';
+  status: "ok" | "error";
   isOnline: boolean;
   modelVersion: string | null;
   timestamp: string;
@@ -63,7 +63,7 @@ export interface AnalysisResult {
   target: TessTarget;
   detections: TransitDetection[];
   lightCurve: TessLightCurve;
-  status: 'pending' | 'processing' | 'completed' | 'failed';
+  status: "pending" | "processing" | "completed" | "failed";
   error?: string;
   explain?: ExplainData;
 }
@@ -81,7 +81,7 @@ export interface PeriodogramData {
   power: number[];
   bestPeriod: number;
   bestPower: number;
-  method?: 'BLS' | 'TLS'; // Optional method identifier
+  method?: "BLS" | "TLS"; // Optional method identifier
 }
 
 export interface PhaseFoldData {
@@ -99,12 +99,12 @@ export interface PredictPayload {
     flux: number[];
     flux_err?: number[];
   };
-  source: 'tic' | 'csv';
+  source: "tic" | "csv";
 }
 
 export interface PredictResult {
   id: string;
-  status: 'success' | 'error';
+  status: "success" | "error";
   data?: AnalysisResult;
   error?: string;
 }
@@ -121,7 +121,7 @@ export interface UploadPreview {
 export interface Example {
   id: string;
   label: string;
-  type: 'tic' | 'csv';
+  type: "tic" | "csv";
   ticId?: string;
   sector?: number;
   fileUrl?: string;
@@ -132,11 +132,21 @@ export interface InputPanelProps {
   onAnalysisComplete: (result: PredictResult) => void;
   onPredict?: (payload: PredictPayload) => Promise<PredictResult>;
   onUploadFile?: (file: File) => Promise<UploadPreview>;
+  onTriggerUpload?: () => void;
   examples?: Example[];
 }
 
 // Status and Alert Types
-export type StatusType = 'idle' | 'fetching' | 'processing' | 'analyzing' | 'scoring' | 'success' | 'error' | 'warning' | 'no-detection';
+export type StatusType =
+  | "idle"
+  | "fetching"
+  | "processing"
+  | "analyzing"
+  | "scoring"
+  | "success"
+  | "error"
+  | "warning"
+  | "no-detection";
 
 export interface StatusState {
   status: StatusType;
@@ -158,7 +168,7 @@ export interface StatusAlertsProps {
 export interface LoadingStep {
   id: string;
   label: string;
-  status: 'pending' | 'active' | 'complete' | 'error';
+  status: "pending" | "active" | "complete" | "error";
   message?: string;
 }
 
@@ -189,8 +199,13 @@ export interface DataQualityBadges {
 
 export interface DetectionScore {
   score: number; // 0-1
-  label: 'Highly Likely Planet' | 'Likely Planet' | 'Possible Planet' | 'Unlikely Planet' | 'No Transit Detected';
-  confidence: 'high' | 'medium' | 'low';
+  label:
+    | "Highly Likely Planet"
+    | "Likely Planet"
+    | "Possible Planet"
+    | "Unlikely Planet"
+    | "No Transit Detected";
+  confidence: "high" | "medium" | "low";
   threshold: number;
 }
 
@@ -217,7 +232,7 @@ export interface PlotDataPoint {
 
 export interface ChartExportOptions {
   filename: string;
-  format: 'png' | 'jpg' | 'svg';
+  format: "png" | "jpg" | "svg";
   quality?: number;
 }
 
@@ -228,7 +243,7 @@ export interface FeatureContribution {
 }
 
 export interface ExplainData {
-  type: 'tree' | 'cnn';
+  type: "tree" | "cnn";
   contributions?: FeatureContribution[];
   text?: string;
 }

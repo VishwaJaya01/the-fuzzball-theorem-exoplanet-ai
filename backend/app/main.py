@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.deps import get_inference_service
-from app.logging import configure_logging
+from app.log_config import configure_logging
 from app.models.infer import (
     FeatureExtractionError,
     InferenceService,

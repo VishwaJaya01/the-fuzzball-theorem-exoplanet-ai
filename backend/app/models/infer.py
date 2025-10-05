@@ -10,7 +10,7 @@ import pandas as pd
 from app.config import Settings
 from app.dataaccess import lc_store
 from app.features.bls import BLSResult, InsufficientDataError, build_bls_features
-from app.logging import get_logger
+from app.log_config import get_logger
 from app.models import loader
 from app.utils_time import elapsed_ms, monotonic_ms
 

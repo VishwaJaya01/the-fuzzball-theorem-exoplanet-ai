@@ -81,10 +81,11 @@ jobs:
           name: vercel-output
           path: ${{ env.APP_DIR }}/.vercel/output
 
-  deploy:
-    name: Deploy to Vercel (preview or prod)
+  deploy-production:
+    name: Deploy to Production
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -105,28 +106,57 @@ jobs:
           ls -la ./${{ env.APP_DIR }} || true
         working-directory: ./
 
-      - name: Deploy (preview for PR/branches, prod for main)
+      - name: Deploy to Production
+        working-directory: ./${{ env.APP_DIR }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          BACKEND_API_URL_PROD: ${{ secrets.BACKEND_API_URL_PROD }}
+        run: |
+          echo "Deploying to Vercel: PRODUCTION (main branch)"
+          npx vercel deploy --cwd . --prebuilt --prod --confirm --token "$VERCEL_TOKEN"
+
+      - name: Print deployed URL (optional)
+        working-directory: ./${{ env.APP_DIR }}
+        run: tail -n 50 ~/.npm/_logs/* || true
+
+  preview-build:
+    name: Preview Build
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Copy build output (from workspace)
+        run: |
+          # ensure we are in repo root, and the next step uses cwd to run deploy
+          ls -la ./${{ env.APP_DIR }} || true
+        working-directory: ./
+
+      - name: Create Preview Build
         working-directory: ./${{ env.APP_DIR }}
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
-          BACKEND_API_URL_PROD: ${{ secrets.BACKEND_API_URL_PROD }}
         run: |
-          # Decide prod vs preview based on branch
-          echo "GITHUB_REF=${GITHUB_REF}"
-          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
-            echo "Deploying to Vercel: PRODUCTION (main branch)"
-            # --prod flags it as production deployment
-            npx vercel deploy --cwd . --prebuilt --prod --confirm --token "$VERCEL_TOKEN"
-          else
-            echo "Deploying to Vercel: PREVIEW (branch or PR)"
-            # create a preview deployment (no --prod)
-            npx vercel deploy --cwd . --prebuilt --confirm --token "$VERCEL_TOKEN"
-          fi
+          echo "Creating Vercel Preview Build (branch: ${GITHUB_REF})"
+          npx vercel deploy --cwd . --prebuilt --confirm --token "$VERCEL_TOKEN"
 
-      - name: Print deployed URL (optional)
-        # Vercel CLI prints the URL; we'll still show the last lines of logs for convenience
+      - name: Print preview URL (optional)
         working-directory: ./${{ env.APP_DIR }}
         run: tail -n 50 ~/.npm/_logs/* || true

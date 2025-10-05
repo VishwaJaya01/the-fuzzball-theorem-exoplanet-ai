@@ -116,6 +116,12 @@ jobs:
           ls -la ./${{ env.APP_DIR }} || true
         working-directory: ./
 
+      - name: Verify build artifacts
+        working-directory: ./${{ env.APP_DIR }}
+        run: |
+          echo "Checking for build artifacts..."
+          ls -la .vercel/output || echo "No .vercel/output directory found"
+          
       - name: Create Vercel project configuration for production
         working-directory: ./${{ env.APP_DIR }}
         env:
@@ -160,12 +166,24 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: vercel-output
+          path: ${{ env.APP_DIR }}/.vercel/output
+
       - name: Copy build output (from workspace)
         run: |
           # ensure we are in repo root, and the next step uses cwd to run deploy
           ls -la ./${{ env.APP_DIR }} || true
         working-directory: ./
 
+      - name: Verify build artifacts
+        working-directory: ./${{ env.APP_DIR }}
+        run: |
+          echo "Checking for build artifacts..."
+          ls -la .vercel/output || echo "No .vercel/output directory found"
+          
       - name: Create Vercel project configuration for preview
         working-directory: ./${{ env.APP_DIR }}
         env:

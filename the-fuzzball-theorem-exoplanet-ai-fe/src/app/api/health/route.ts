@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:7860";
+const BACKEND_API_URL = process.env.BACKEND_API_URL;
 
 /**
  * Health check endpoint that proxies the FastAPI backend status

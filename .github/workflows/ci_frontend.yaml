@@ -61,6 +61,8 @@ jobs:
 
       - name: Create Vercel prebuilt output (.vercel/output)
         working-directory: ./${{ env.APP_DIR }}
+        # Only run if Vercel secrets are configured
+        if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
         env:
           # Vercel CLI may need token to create/link project non-interactively
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -74,6 +76,15 @@ jobs:
         id: set-output-path
         run: echo "path=.vercel/output" >> $GITHUB_OUTPUT
 
+      - name: Skip Vercel build (secrets not configured)
+        if: ${{ secrets.VERCEL_TOKEN == '' || secrets.VERCEL_ORG_ID == '' || secrets.VERCEL_PROJECT_ID == '' }}
+        run: |
+          echo "⚠️ Vercel deployment skipped - secrets not configured"
+          echo "To enable Vercel deployment, configure the following secrets in your repository:"
+          echo "  - VERCEL_TOKEN"
+          echo "  - VERCEL_ORG_ID" 
+          echo "  - VERCEL_PROJECT_ID"
+
       - name: Upload build artifact for debugging (optional)
         if: always()
         uses: actions/upload-artifact@v4
@@ -81,10 +92,29 @@ jobs:
           name: vercel-output
           path: ${{ env.APP_DIR }}/.vercel/output
 
+  deployment-status:
+    name: Check deployment configuration
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment Status
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "${{ secrets.VERCEL_ORG_ID }}" ] || [ -z "${{ secrets.VERCEL_PROJECT_ID }}" ]; then
+            echo "⚠️ Vercel deployment skipped - secrets not configured"
+            echo "To enable deployment, add these secrets to your repository:"
+            echo "  - VERCEL_TOKEN (get from https://vercel.com/account/tokens)"
+            echo "  - VERCEL_ORG_ID"
+            echo "  - VERCEL_PROJECT_ID"
+          else
+            echo "✅ Vercel secrets configured - deployment will proceed"
+          fi
+
   deploy:
     name: Deploy to Vercel (preview or prod)
     needs: build
     runs-on: ubuntu-latest
+    # Only run deploy if Vercel secrets are configured
+    if: ${{ secrets.VERCEL_TOKEN != '' && secrets.VERCEL_ORG_ID != '' && secrets.VERCEL_PROJECT_ID != '' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

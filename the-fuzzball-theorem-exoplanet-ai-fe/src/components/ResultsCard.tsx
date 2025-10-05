@@ -1,24 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import type { ResultsCardProps, DetectionScore, TransitMetrics, DataQualityBadges } from '@/lib/types';
-import { showSuccess, showError } from '@/lib/toast';
+import React, { useState } from "react";
+import type {
+  ResultsCardProps,
+  DetectionScore,
+  TransitMetrics,
+  DataQualityBadges,
+} from "@/lib/types";
+import { showSuccess, showError } from "@/lib/toast";
 
 /**
  * ResultsCard Component
  * Displays prediction results with score, metrics, and quality badges
  */
-function ResultsCard({ 
-  result, 
+function ResultsCard({
+  result,
   onCopyJson,
   onDownloadCsv,
-  onCopyApiCurl 
+  onCopyApiCurl,
 }: ResultsCardProps) {
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
 
   // Extract metrics from result
   const getMetrics = (): TransitMetrics | null => {
-    if (!result || !result.data?.detections || result.data.detections.length === 0) {
+    if (!result?.data?.detections?.length) {
       return null;
     }
 
@@ -31,61 +36,56 @@ function ResultsCard({
       epoch: detection.epoch,
       confidence: detection.confidence,
     };
+    return metrics;
   };
 
   const metrics = getMetrics();
 
-  // Calculate detection score and label
+  // Use API-calculated confidence score (already handles ML model fallbacks)
   const getDetectionScore = (): DetectionScore => {
     if (!metrics) {
       return {
         score: 0,
-        label: 'No Transit Detected',
-        confidence: 'low',
-        threshold: 0.5,
+        label: "No Transit Detected",
+        confidence: "low",
+        threshold: 0.05,
       };
     }
 
-    const score = metrics.confidence;
+    // Use the robust confidence score calculated by the API
+    const apiScore = metrics.confidence;
 
-    if (score >= 0.9) {
+    // Interpret confidence scores with proper thresholds
+    if (apiScore >= 0.7) {
       return {
-        score,
-        label: 'Highly Likely Planet',
-        confidence: 'high',
-        threshold: 0.9,
-      };
-    } else if (score >= 0.7) {
-      return {
-        score,
-        label: 'Likely Planet',
-        confidence: 'high',
+        score: apiScore,
+        label: "Likely Planet",
+        confidence: "high",
         threshold: 0.7,
       };
-    } else if (score >= 0.5) {
+    } else if (apiScore >= 0.4) {
       return {
-        score,
-        label: 'Possible Planet',
-        confidence: 'medium',
-        threshold: 0.5,
+        score: apiScore,
+        label: "Possible Planet",
+        confidence: "medium",
+        threshold: 0.4,
       };
-    } else if (score >= 0.3) {
+    } else if (apiScore >= 0.15) {
       return {
-        score,
-        label: 'Unlikely Planet',
-        confidence: 'low',
-        threshold: 0.3,
+        score: apiScore,
+        label: "Unlikely Planet",
+        confidence: "low",
+        threshold: 0.15,
       };
     } else {
       return {
-        score,
-        label: 'No Transit Detected',
-        confidence: 'low',
-        threshold: 0.3,
+        score: apiScore,
+        label: "No Transit Detected",
+        confidence: "low",
+        threshold: 0.15,
       };
     }
   };
-
   const detectionScore = getDetectionScore();
 
   // Calculate quality badges
@@ -112,43 +112,43 @@ function ResultsCard({
   const getScoreColors = () => {
     if (detectionScore.score >= 0.9) {
       return {
-        bg: 'bg-emerald-50 dark:bg-emerald-900/20',
-        border: 'border-emerald-200 dark:border-emerald-800',
-        text: 'text-emerald-800 dark:text-emerald-300',
-        icon: '🌍',
-        ring: 'ring-emerald-500',
+        bg: "bg-emerald-50 dark:bg-emerald-900/20",
+        border: "border-emerald-200 dark:border-emerald-800",
+        text: "text-emerald-800 dark:text-emerald-300",
+        icon: "🌍",
+        ring: "ring-emerald-500",
       };
     } else if (detectionScore.score >= 0.7) {
       return {
-        bg: 'bg-green-50 dark:bg-green-900/20',
-        border: 'border-green-200 dark:border-green-800',
-        text: 'text-green-800 dark:text-green-300',
-        icon: '🪐',
-        ring: 'ring-green-500',
+        bg: "bg-green-50 dark:bg-green-900/20",
+        border: "border-green-200 dark:border-green-800",
+        text: "text-green-800 dark:text-green-300",
+        icon: "🪐",
+        ring: "ring-green-500",
       };
     } else if (detectionScore.score >= 0.5) {
       return {
-        bg: 'bg-blue-50 dark:bg-blue-900/20',
-        border: 'border-blue-200 dark:border-blue-800',
-        text: 'text-blue-800 dark:text-blue-300',
-        icon: '🔵',
-        ring: 'ring-blue-500',
+        bg: "bg-blue-50 dark:bg-blue-900/20",
+        border: "border-blue-200 dark:border-blue-800",
+        text: "text-blue-800 dark:text-blue-300",
+        icon: "🔵",
+        ring: "ring-blue-500",
       };
     } else if (detectionScore.score >= 0.3) {
       return {
-        bg: 'bg-yellow-50 dark:bg-yellow-900/20',
-        border: 'border-yellow-200 dark:border-yellow-800',
-        text: 'text-yellow-800 dark:text-yellow-300',
-        icon: '⚠️',
-        ring: 'ring-yellow-500',
+        bg: "bg-yellow-50 dark:bg-yellow-900/20",
+        border: "border-yellow-200 dark:border-yellow-800",
+        text: "text-yellow-800 dark:text-yellow-300",
+        icon: "⚠️",
+        ring: "ring-yellow-500",
       };
     } else {
       return {
-        bg: 'bg-gray-50 dark:bg-gray-900/20',
-        border: 'border-gray-200 dark:border-gray-800',
-        text: 'text-gray-800 dark:text-gray-300',
-        icon: '❌',
-        ring: 'ring-gray-500',
+        bg: "bg-gray-50 dark:bg-gray-900/20",
+        border: "border-gray-200 dark:border-gray-800",
+        text: "text-gray-800 dark:text-gray-300",
+        icon: "❌",
+        ring: "ring-gray-500",
       };
     }
   };
@@ -160,10 +160,10 @@ function ResultsCard({
     try {
       const json = JSON.stringify(result, null, 2);
       await navigator.clipboard.writeText(json);
-      showSuccess('JSON copied to clipboard!');
+      showSuccess("JSON copied to clipboard!");
       onCopyJson?.();
     } catch {
-      showError('Failed to copy JSON');
+      showError("Failed to copy JSON");
     }
   };
 
@@ -171,12 +171,12 @@ function ResultsCard({
   const handleDownloadCsv = () => {
     try {
       if (!metrics) {
-        showError('No data to download');
+        showError("No data to download");
         return;
       }
 
       const csv = [
-        'metric,value',
+        "metric,value",
         `score,${detectionScore.score}`,
         `label,${detectionScore.label}`,
         `period_days,${metrics.period}`,
@@ -184,22 +184,22 @@ function ResultsCard({
         `depth_ppm,${metrics.depth}`,
         `snr,${metrics.snr}`,
         `confidence,${metrics.confidence}`,
-      ].join('\n');
+      ].join("\n");
 
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const blob = new Blob([csv], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `exofind-results-${result?.id || 'unknown'}.csv`;
+      a.download = `exofind-results-${result?.id || "unknown"}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      showSuccess('CSV downloaded!');
+      showSuccess("CSV downloaded!");
       onDownloadCsv?.();
     } catch {
-      showError('Failed to download CSV');
+      showError("Failed to download CSV");
     }
   };
 
@@ -208,13 +208,17 @@ function ResultsCard({
     try {
       const curlCommand = `curl -X POST https://api.exofind.app/predict \\
   -H "Content-Type: application/json" \\
-  -d '${JSON.stringify({ ticId: result?.data?.target?.tic_id || 'TIC_ID' }, null, 2)}'`;
+  -d '${JSON.stringify(
+    { ticId: result?.data?.target?.tic_id || "TIC_ID" },
+    null,
+    2
+  )}'`;
 
       await navigator.clipboard.writeText(curlCommand);
-      showSuccess('API curl command copied!');
+      showSuccess("API curl command copied!");
       onCopyApiCurl?.();
     } catch {
-      showError('Failed to copy curl command');
+      showError("Failed to copy curl command");
     }
   };
 
@@ -230,7 +234,7 @@ function ResultsCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {/* Score Icon */}
-            <div 
+            <div
               className={`text-5xl ${colors.ring} ring-4 ring-opacity-20 rounded-full w-20 h-20 flex items-center justify-center bg-white dark:bg-gray-800`}
             >
               {colors.icon}
@@ -244,25 +248,26 @@ function ResultsCard({
                 </h3>
                 <button
                   className="relative"
-                  onMouseEnter={() => setShowTooltip('score')}
+                  onMouseEnter={() => setShowTooltip("score")}
                   onMouseLeave={() => setShowTooltip(null)}
                 >
-                  <svg 
-                    className={`w-5 h-5 ${colors.text} opacity-60 hover:opacity-100`} 
-                    fill="none" 
-                    stroke="currentColor" 
+                  <svg
+                    className={`w-5 h-5 ${colors.text} opacity-60 hover:opacity-100`}
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  {showTooltip === 'score' && (
+                  {showTooltip === "score" && (
                     <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded-lg whitespace-nowrap z-10 shadow-lg">
-                      Confidence score based on transit depth, SNR, and periodicity
+                      Confidence score based on transit depth, SNR, and
+                      periodicity
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
                         <div className="border-4 border-transparent border-t-gray-900 dark:border-t-gray-700"></div>
                       </div>
@@ -274,7 +279,7 @@ function ResultsCard({
                 {detectionScore.label}
               </p>
               <p className={`text-sm ${colors.text} opacity-75 mt-1`}>
-                Threshold: {(detectionScore.threshold * 100).toFixed(0)}% • 
+                Threshold: {(detectionScore.threshold * 100).toFixed(0)}% •
                 Confidence: {detectionScore.confidence}
               </p>
             </div>
@@ -286,12 +291,12 @@ function ResultsCard({
               <div
                 className={`absolute inset-y-0 left-0 ${
                   detectionScore.score >= 0.7
-                    ? 'bg-green-500'
+                    ? "bg-green-500"
                     : detectionScore.score >= 0.5
-                    ? 'bg-blue-500'
+                    ? "bg-blue-500"
                     : detectionScore.score >= 0.3
-                    ? 'bg-yellow-500'
-                    : 'bg-gray-400'
+                    ? "bg-yellow-500"
+                    : "bg-gray-400"
                 } transition-all duration-500`}
                 style={{ width: `${detectionScore.score * 100}%` }}
               />
@@ -315,49 +320,97 @@ function ResultsCard({
             {/* Period */}
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-1">
-                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-4 h-4 text-purple-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Period</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                  Period
+                </span>
               </div>
               <p className="text-lg font-bold text-gray-900 dark:text-white">
-                {formatMetric(metrics.period, 'days')}
+                {formatMetric(metrics.period, "days")}
               </p>
             </div>
 
             {/* Duration */}
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-1">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg
+                  className="w-4 h-4 text-blue-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Duration</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                  Duration
+                </span>
               </div>
               <p className="text-lg font-bold text-gray-900 dark:text-white">
-                {formatMetric(metrics.duration, 'hrs')}
+                {formatMetric(metrics.duration, "hrs")}
               </p>
             </div>
 
             {/* Depth */}
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-1">
-                <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                <svg
+                  className="w-4 h-4 text-orange-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  />
                 </svg>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Depth</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                  Depth
+                </span>
               </div>
               <p className="text-lg font-bold text-gray-900 dark:text-white">
-                {formatMetric(metrics.depth, 'ppm', 0)}
+                {formatMetric(metrics.depth * 1e6, "ppm", 0)}
               </p>
             </div>
 
             {/* SNR */}
             <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-1">
-                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <svg
+                  className="w-4 h-4 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
                 </svg>
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">SNR</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                  SNR
+                </span>
               </div>
               <p className="text-lg font-bold text-gray-900 dark:text-white">
                 {metrics.snr.toFixed(1)}
@@ -375,26 +428,56 @@ function ResultsCard({
         <div className="flex flex-wrap gap-2">
           {badges.cleanData && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-sm font-medium rounded-full">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               Clean Data
             </span>
           )}
-          
+
           {badges.lowCrowding && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm font-medium rounded-full">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               Low Crowding
             </span>
           )}
-          
+
           {badges.highSnr && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-sm font-medium rounded-full">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               High SNR
             </span>
@@ -402,8 +485,18 @@ function ResultsCard({
 
           {badges.adequateCoverage && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-teal-100 dark:bg-teal-900/30 text-teal-800 dark:text-teal-300 text-sm font-medium rounded-full">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               Adequate Coverage
             </span>
@@ -411,8 +504,18 @@ function ResultsCard({
 
           {!badges.cleanData && !badges.lowCrowding && !badges.highSnr && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-900/30 text-gray-800 dark:text-gray-300 text-sm font-medium rounded-full">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
               Quality Check Needed
             </span>
@@ -427,8 +530,18 @@ function ResultsCard({
             onClick={handleCopyJson}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+              />
             </svg>
             Copy JSON
           </button>
@@ -437,8 +550,18 @@ function ResultsCard({
             onClick={handleDownloadCsv}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
             Download CSV
           </button>
@@ -447,8 +570,18 @@ function ResultsCard({
             onClick={handleCopyApiCurl}
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+              />
             </svg>
             Copy API curl
           </button>

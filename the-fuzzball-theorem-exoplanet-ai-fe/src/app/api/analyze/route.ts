@@ -86,17 +86,77 @@ export async function POST(request: Request) {
       );
     }
 
+    // Calculate robust confidence score from BLS parameters
+    const calculateRobustConfidence = (
+      period: number,
+      depth_ppm: number, 
+      snr: number,
+      duration_hours: number,
+      mlScore: number
+    ): number => {
+      // If ML score is valid and reasonable, use it
+      if (mlScore > 0.01 && mlScore <= 1.0) {
+        return mlScore;
+      }
+      
+      // Fallback: Calculate confidence from BLS transit parameters
+      let confidence = 0;
+      
+      // Depth contribution (0-0.4)
+      const absDepthPpm = Math.abs(depth_ppm);
+      if (absDepthPpm > 10000) confidence += 0.4;      // Very deep (>1%)
+      else if (absDepthPpm > 5000) confidence += 0.35; // Deep (>0.5%)
+      else if (absDepthPpm > 2000) confidence += 0.3;  // Moderate (>0.2%)
+      else if (absDepthPpm > 1000) confidence += 0.25; // Shallow (>0.1%)
+      else if (absDepthPpm > 500) confidence += 0.15;  // Very shallow (>0.05%)
+      else if (absDepthPpm > 200) confidence += 0.1;   // Marginal (>0.02%)
+      
+      // Period contribution (0-0.25)
+      if (period > 0.5 && period < 300) {  // Reasonable period range
+        confidence += 0.15;
+        if (period > 1 && period < 50) confidence += 0.1; // Optimal range for TESS
+      }
+      
+      // Duration contribution (0-0.2)
+      if (duration_hours > 0.1 && duration_hours < 24) {
+        confidence += 0.15;
+        if (duration_hours > 1 && duration_hours < 12) confidence += 0.05; // Reasonable range
+      }
+      
+      // SNR contribution (0-0.15)
+      if (snr > 10) confidence += 0.15;
+      else if (snr > 7) confidence += 0.12;
+      else if (snr > 5) confidence += 0.1;
+      else if (snr > 3) confidence += 0.08;
+      else if (snr > 1) confidence += 0.05;
+      else if (snr > 0.1) confidence += 0.02;
+      
+      return Math.min(confidence, 1.0);
+    };
+
     // Convert analysis output to frontend format
     const detections = [];
-    if (analysis.score > 0.1 && analysis.period_days > 0) {
-      // Threshold for detection
+    // Show detections if we have valid transit parameters
+    if (
+      analysis.period_days > 0 &&
+      analysis.depth_ppm != null &&
+      Math.abs(analysis.depth_ppm) > 100
+    ) {
+      const robustConfidence = calculateRobustConfidence(
+        analysis.period_days,
+        analysis.depth_ppm,
+        analysis.snr || 0,
+        analysis.duration_hours || 0,
+        analysis.score || 0
+      );
+
       detections.push({
         period: analysis.period_days,
-        epoch: analysis.t0,
-        duration: analysis.duration_hours / 24, // Convert hours to days
-        depth: analysis.depth_ppm / 1e6, // Convert ppm to fraction
-        confidence: analysis.score,
-        snr: analysis.snr,
+        epoch: analysis.t0 || 0,
+        duration: (analysis.duration_hours || 0) / 24, // Convert hours to days
+        depth: Math.abs(analysis.depth_ppm) / 1e6, // Convert ppm to fraction, use absolute value
+        confidence: robustConfidence,
+        snr: analysis.snr || 0,
       });
     }
 

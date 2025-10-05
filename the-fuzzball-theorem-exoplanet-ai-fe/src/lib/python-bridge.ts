@@ -112,10 +112,9 @@ from pathlib import Path
 
 def load_tic_data(tic_id, data_dir):
     try:
-        # Try to load from interim features folder
-        features_path = Path(data_dir) / "interim" / "features" / f"TIC-{tic_id}.parquet"
-        if features_path.exists():
-            df = pd.read_parquet(features_path)
+        lc_path = Path(data_dir) / "processed" / "lightcurves" / f"TIC-{tic_id}.parquet"
+        if lc_path.exists():
+            df = pd.read_parquet(lc_path)
             if 'time' in df.columns and 'flux' in df.columns:
                 result = {
                     'time': df['time'].tolist(),
@@ -125,17 +124,11 @@ def load_tic_data(tic_id, data_dir):
                     result['flux_err'] = df['flux_err'].tolist()
                 return result
         
-        # Try lightcurves folder
-        lc_path = Path(data_dir) / "processed" / "lightcurves" / f"TIC-{tic_id}.parquet"
-        if lc_path.exists():
-            df = pd.read_parquet(lc_path)
-            result = {
-                'time': df['time'].tolist(),
-                'flux': df['flux'].tolist(),
-            }
-            if 'flux_err' in df.columns:
-                result['flux_err'] = df['flux_err'].tolist()
-            return result
+        # Fallback: Try interim features folder (contains pre-calculated features, not raw data)
+        features_path = Path(data_dir) / "interim" / "features" / f"TIC-{tic_id}.parquet"
+        if features_path.exists():
+            # This contains BLS features, not light curve data - skip for now
+            pass
             
         return None
         

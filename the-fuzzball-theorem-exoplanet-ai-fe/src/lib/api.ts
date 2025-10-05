@@ -2,14 +2,14 @@
  * API utility functions for ExoFind application
  */
 
-import type { 
-  PredictPayload, 
-  PredictResult, 
+import type {
+  PredictPayload,
+  PredictResult,
   UploadPreview,
-  HealthCheckResponse 
-} from './types';
+  HealthCheckResponse,
+} from "./types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 /**
  * Check API health and get model version
@@ -17,7 +17,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export async function checkHealth(): Promise<HealthCheckResponse> {
   const response = await fetch(`${API_BASE_URL}/api/health`);
   if (!response.ok) {
-    throw new Error('Health check failed');
+    throw new Error("Health check failed");
   }
   return response.json();
 }
@@ -25,12 +25,14 @@ export async function checkHealth(): Promise<HealthCheckResponse> {
 /**
  * Predict exoplanet transits from provided data
  */
-export async function predictTransits(payload: PredictPayload): Promise<PredictResult> {
+export async function predictTransits(
+  payload: PredictPayload
+): Promise<PredictResult> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/predict`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
@@ -40,21 +42,21 @@ export async function predictTransits(payload: PredictPayload): Promise<PredictR
     if (!response.ok) {
       return {
         id: crypto.randomUUID(),
-        status: 'error',
-        error: data.error || 'Prediction failed',
+        status: "error",
+        error: data.error || "Prediction failed",
       };
     }
 
     return {
       id: crypto.randomUUID(),
-      status: 'success',
+      status: "success",
       data: data,
     };
   } catch (error) {
     return {
       id: crypto.randomUUID(),
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }
@@ -62,34 +64,39 @@ export async function predictTransits(payload: PredictPayload): Promise<PredictR
 /**
  * Fetch TESS light curve data by TIC ID
  */
-export async function fetchTessData(ticId: string, sector?: number): Promise<PredictResult> {
+export async function fetchTessData(
+  ticId: string,
+  sector?: number
+): Promise<PredictResult> {
   try {
     const params = new URLSearchParams({ ticId });
     if (sector) {
-      params.append('sector', sector.toString());
+      params.append("sector", sector.toString());
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/tess?${params.toString()}`);
+    const response = await fetch(
+      `${API_BASE_URL}/api/tess?${params.toString()}`
+    );
     const data = await response.json();
 
     if (!response.ok) {
       return {
         id: crypto.randomUUID(),
-        status: 'error',
-        error: data.error || 'Failed to fetch TESS data',
+        status: "error",
+        error: data.error || "Failed to fetch TESS data",
       };
     }
 
     return {
       id: crypto.randomUUID(),
-      status: 'success',
+      status: "success",
       data: data,
     };
   } catch (error) {
     return {
       id: crypto.randomUUID(),
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }
@@ -114,12 +121,14 @@ export async function uploadCsvFile(file: File): Promise<UploadPreview> {
 /**
  * Analyze light curve data
  */
-export async function analyzeData(payload: PredictPayload): Promise<PredictResult> {
+export async function analyzeData(
+  payload: PredictPayload
+): Promise<PredictResult> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/analyze`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
@@ -129,21 +138,21 @@ export async function analyzeData(payload: PredictPayload): Promise<PredictResul
     if (!response.ok) {
       return {
         id: crypto.randomUUID(),
-        status: 'error',
-        error: data.error || 'Analysis failed',
+        status: "error",
+        error: data.error || "Analysis failed",
       };
     }
 
     return {
       id: crypto.randomUUID(),
-      status: 'success',
+      status: "success",
       data: data,
     };
   } catch (error) {
     return {
       id: crypto.randomUUID(),
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      status: "error",
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }

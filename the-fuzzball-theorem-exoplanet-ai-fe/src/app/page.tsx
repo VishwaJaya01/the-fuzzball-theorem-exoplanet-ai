@@ -1,17 +1,25 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
-import Header from '@/components/Header';
-import InputPanel from '@/components/InputPanel';
-import StatusAlerts from '@/components/StatusAlerts';
-import ResultsCard from '@/components/ResultsCard';
-import StarMetaCard from '@/components/StarMetaCard';
-import PlanetSimulation from '@/components/PlanetSimulation';
-import WhyPanel from '@/components/WhyPanel';
-import ActionsMenu from '@/components/ActionsMenu';
-import HistoryCompare from '@/components/HistoryCompare';
-import type { PredictResult, HistoryItem } from '@/lib/types';
+import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import Header from "@/components/Header";
+import InputPanel from "@/components/InputPanel";
+import StatusAlerts from "@/components/StatusAlerts";
+import ResultsCard from "@/components/ResultsCard";
+import StarMetaCard from "@/components/StarMetaCard";
+import PlanetSimulation from "@/components/PlanetSimulation";
+import WhyPanel from "@/components/WhyPanel";
+import ActionsMenu from "@/components/ActionsMenu";
+import HistoryCompare from "@/components/HistoryCompare";
+import { predictTransits, analyzeData, uploadCsvFile } from "@/lib/api";
+import type {
+  PredictResult,
+  HistoryItem,
+  PredictPayload,
+  UploadPreview,
+} from "@/lib/types";
+
+declare const crypto: Crypto;
 
 export default function Home() {
   const [result, setResult] = useState<PredictResult | null>(null);
@@ -23,44 +31,92 @@ export default function Home() {
     setIsAnalyzing(false);
 
     // Add to history if successful
-    if (analysisResult.status === 'success' && analysisResult.data) {
+    if (analysisResult.status === "success" && analysisResult.data) {
+      // Use API-calculated confidence directly for consistency
+      const historyScore =
+        analysisResult.data.detections.length > 0
+          ? analysisResult.data.detections[0].confidence
+          : 0;
+
       const historyItem: HistoryItem = {
         id: `hist_${Date.now()}`,
         timestamp: new Date().toISOString(),
         ticId: analysisResult.data.target.tic_id,
         sector: analysisResult.data.target.sector,
-        score: analysisResult.data.detections.length > 0 
-          ? Math.max(...analysisResult.data.detections.map(d => d.confidence))
-          : 0,
+        score: historyScore,
         detectionCount: analysisResult.data.detections.length,
         result: analysisResult,
       };
-      setHistory(prev => [historyItem, ...prev].slice(0, 10)); // Keep last 10
+      setHistory((prev) => [historyItem, ...prev].slice(0, 10)); // Keep last 10
     }
   };
 
   const handleHistorySelect = (items: HistoryItem[]) => {
-    // Optional: Do something when history items are selected
-    console.log('Selected history items:', items);
+    // TODO: Implement comparison feature
+  };
+
+  const handlePredict = async (
+    payload: PredictPayload
+  ): Promise<PredictResult> => {
+    setIsAnalyzing(true);
+    try {
+      // Use the analyze endpoint for comprehensive results
+      const result = await analyzeData(payload);
+      handleAnalysisComplete(result);
+      return result;
+    } catch (error) {
+      const errorResult: PredictResult = {
+        id: crypto.randomUUID(),
+        status: "error",
+        error: error instanceof Error ? error.message : "Analysis failed",
+      };
+      handleAnalysisComplete(errorResult);
+      return errorResult;
+    }
+  };
+
+  const handleUploadFile = async (file: File): Promise<UploadPreview> => {
+    try {
+      return await uploadCsvFile(file);
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : "Upload failed");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Toaster position="top-right" />
-      
+
       {/* Header Section */}
-      <Header 
-        onOpenAbout={() => console.log('About clicked')}
-        onUploadClick={() => console.log('Upload clicked')}
+      <Header
+        onOpenAbout={() => console.log("About clicked")}
+        onUploadClick={() => console.log("Upload clicked")}
       />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 space-y-8 max-w-7xl">
-        
         {/* Input Section */}
         <section id="input" className="scroll-mt-20">
           <InputPanel
             onAnalysisComplete={handleAnalysisComplete}
+            onPredict={handlePredict}
+            onUploadFile={handleUploadFile}
+            examples={[
+              {
+                id: "tic-1003831",
+                label: "TIC-1003831",
+                type: "tic",
+                ticId: "1003831",
+                description: "Known candidate with clear transit signals",
+              },
+              {
+                id: "tic-100389539",
+                label: "TIC-100389539",
+                type: "tic",
+                ticId: "100389539",
+                description: "High-confidence exoplanet candidate",
+              },
+            ]}
           />
         </section>
 
@@ -72,21 +128,25 @@ export default function Home() {
         )}
 
         {/* Results Section */}
-        {result && result.status === 'success' && result.data && (
+        {result && result.status === "success" && result.data && (
           <>
             {/* Status Alert */}
             <section id="results-status" className="scroll-mt-20">
               <StatusAlerts
-                status={result.data.detections.length > 0 ? 'success' : 'no-detection'}
+                status={
+                  result.data.detections.length > 0 ? "success" : "no-detection"
+                }
                 detectionCount={result.data.detections.length}
               />
             </section>
 
             {/* Action Menu */}
             <section id="actions" className="scroll-mt-20">
-              <ActionsMenu 
-                result={result} 
-                apiUrl={process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}
+              <ActionsMenu
+                result={result}
+                apiUrl={
+                  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+                }
               />
             </section>
 
@@ -120,7 +180,7 @@ export default function Home() {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                     <span>🪐</span> Detection Results
                   </h2>
-                  <ResultsCard detections={result.data.detections} />
+                  <ResultsCard result={result} />
                 </div>
               </section>
             )}
@@ -176,7 +236,7 @@ export default function Home() {
         )}
 
         {/* Error State */}
-        {result && result.status === 'error' && (
+        {result && result.status === "error" && (
           <section id="error" className="scroll-mt-20">
             <StatusAlerts status="error" errorMessage={result.error} />
           </section>
@@ -241,7 +301,8 @@ export default function Home() {
                 </div>
                 <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    👆 <strong>Get started:</strong> Enter a TIC ID or upload TESS data above
+                    👆 <strong>Get started:</strong> Enter a TIC ID or upload
+                    TESS data above
                   </p>
                 </div>
               </div>
@@ -255,8 +316,8 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              <strong className="text-gray-900 dark:text-white">ExoFind</strong> • 
-              Powered by the Fuzzball Theorem • Built with Next.js & Three.js
+              <strong className="text-gray-900 dark:text-white">ExoFind</strong>{" "}
+              • Powered by the Fuzzball Theorem • Built with Next.js & Three.js
             </div>
             <div className="flex gap-6 text-sm">
               <a

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Toaster } from "react-hot-toast";
+import { analyzeData, uploadCsvFile } from "@/lib/api";
 import Header from "@/components/Header";
 import InputPanel from "@/components/InputPanel";
 import StatusAlerts from "@/components/StatusAlerts";
@@ -11,7 +12,7 @@ import PlanetSimulation from "@/components/PlanetSimulation";
 import WhyPanel from "@/components/WhyPanel";
 import ActionsMenu from "@/components/ActionsMenu";
 import HistoryCompare from "@/components/HistoryCompare";
-import { predictTransits, analyzeData, uploadCsvFile } from "@/lib/api";
+
 import type {
   PredictResult,
   HistoryItem,
@@ -53,6 +54,7 @@ export default function Home() {
 
   const handleHistorySelect = (items: HistoryItem[]) => {
     // TODO: Implement comparison feature
+    console.log("Selected history items:", items);
   };
 
   const handlePredict = async (
@@ -90,7 +92,9 @@ export default function Home() {
       {/* Header Section */}
       <Header
         onOpenAbout={() => console.log("About clicked")}
-        onUploadClick={() => (window as any).triggerFileUpload?.()}
+        onUploadClick={() =>
+          (window as { triggerFileUpload?: () => void }).triggerFileUpload?.()
+        }
       />
 
       {/* Main Content */}

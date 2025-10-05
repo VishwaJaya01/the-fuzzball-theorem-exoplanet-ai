@@ -41,7 +41,7 @@ export class PythonBridge {
     time: number[],
     flux: number[],
     flux_err?: number[],
-    meta?: Record<string, any>
+    meta?: Record<string, unknown>
   ): Promise<ModelPrediction> {
     return new Promise((resolve, reject) => {
       const pythonScript = join(process.cwd(), "..", "model", "predict_cli.py");
@@ -87,7 +87,7 @@ export class PythonBridge {
             return;
           }
           resolve(result);
-        } catch (e) {
+        } catch (_e) {
           reject(new Error(`Failed to parse Python output: ${output}`));
         }
       });
@@ -168,7 +168,7 @@ if __name__ == "__main__":
             return;
           }
           resolve(result);
-        } catch (e) {
+        } catch (_e) {
           reject(new Error(`Failed to parse output: ${output}`));
         }
       });
@@ -178,8 +178,10 @@ if __name__ == "__main__":
   /**
    * Get metadata for a TIC ID from preprocessed metadata
    */
-  async getStarMetadata(ticId: string): Promise<Record<string, any> | null> {
-    return new Promise((resolve, reject) => {
+  async getStarMetadata(
+    ticId: string
+  ): Promise<Record<string, unknown> | null> {
+    return new Promise((resolve) => {
       const metaScript = `
 import pandas as pd
 import json
@@ -242,7 +244,7 @@ if __name__ == "__main__":
             return;
           }
           resolve(result);
-        } catch (e) {
+        } catch (_e) {
           console.warn("Failed to parse metadata:", output);
           resolve(null);
         }

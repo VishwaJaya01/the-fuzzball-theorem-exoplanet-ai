@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { join } from "path";
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, readdirSync } from "fs";
 
 /**
  * Health check endpoint for API status monitoring
@@ -30,46 +30,46 @@ export async function GET() {
           modelMode = metrics.mode || "unknown";
         }
       }
-    } catch (error) {
-      console.warn("Model check failed:", error);
+    } catch (_error) {
+      console.warn("Model check failed:", _error);
       modelStatus = "error";
     }
 
     // Check data availability
     let dataStatus = "available";
-    let dataCounts = { features: 0, processed: 0 };
+    const dataCounts = { features: 0, processed: 0 };
 
     try {
       const interimDir = join(projectRoot, "data", "interim", "features");
       const processedDir = join(projectRoot, "data", "processed");
 
       if (existsSync(interimDir)) {
-        const files = require("fs").readdirSync(interimDir);
+        const files = readdirSync(interimDir);
         dataCounts.features = files.filter((f: string) =>
           f.endsWith(".parquet")
         ).length;
       }
 
       if (existsSync(processedDir)) {
-        dataCounts.processed = require("fs").readdirSync(processedDir).length;
+        dataCounts.processed = readdirSync(processedDir).length;
       }
 
       if (dataCounts.features === 0 && dataCounts.processed === 0) {
         dataStatus = "no_data";
       }
-    } catch (error) {
+    } catch (_error) {
       dataStatus = "error";
     }
 
     // Check Python availability
     let pythonStatus = "available";
     try {
-      const { spawn } = require("child_process");
+      const { spawn } = await import("child_process");
       const python = spawn("python", ["--version"], { stdio: "pipe" });
       python.on("error", () => {
         pythonStatus = "unavailable";
       });
-    } catch (error) {
+    } catch (_error) {
       pythonStatus = "error";
     }
 

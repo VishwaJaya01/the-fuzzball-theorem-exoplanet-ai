@@ -36,7 +36,8 @@ function InputPanel({
   React.useEffect(() => {
     if (onTriggerUpload) {
       // Store the trigger function reference
-      (window as any).triggerFileUpload = triggerFileUpload;
+      (window as { triggerFileUpload?: () => void }).triggerFileUpload =
+        triggerFileUpload;
     }
   }, [onTriggerUpload]);
 

@@ -19,6 +19,12 @@ export interface HealthCheckResponse {
     ml_model: string;
     database: string;
   };
+  backend?: {
+    url: string;
+    mode: string | null;
+    model: string | null;
+    isProbability: boolean;
+  };
   error?: string;
 }
 
@@ -282,3 +288,4 @@ export interface PlanetSimulationProps {
   detections: TransitDetection[];
   ticId: string;
 }
+

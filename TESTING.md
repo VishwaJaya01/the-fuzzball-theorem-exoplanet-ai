@@ -7,6 +7,12 @@ This guide helps you test the complete exoplanet detection system integration.
 1. **Python Environment**: Ensure Python is installed with required packages:
 
    ```bash
+   pip install -r requirements.txt
+   ```
+
+   Or manually:
+
+   ```bash
    pip install pandas numpy astropy joblib scikit-learn
    ```
 
@@ -35,6 +41,14 @@ npm run dev
 
 Then test the health endpoint:
 
+**For PowerShell (Windows):**
+
+```powershell
+curl.exe http://localhost:3000/api/health
+```
+
+**For Bash (Linux/Mac):**
+
 ```bash
 curl http://localhost:3000/api/health
 ```
@@ -61,11 +75,27 @@ Expected output: JSON with score, features, and warnings.
 
 #### Test TESS Data Loading
 
+**For PowerShell (Windows):**
+
+```powershell
+curl.exe "http://localhost:3000/api/tess?ticId=123456789"
+```
+
+**For Bash (Linux/Mac):**
+
 ```bash
 curl "http://localhost:3000/api/tess?ticId=123456789"
 ```
 
 #### Test Prediction with TIC ID
+
+**For PowerShell (Windows):**
+
+```powershell
+curl.exe -X POST "http://localhost:3000/api/predict" -H "Content-Type: application/json" -d '{\"source\": \"tic\", \"ticId\": \"123456789\"}'
+```
+
+**For Bash (Linux/Mac):**
 
 ```bash
 curl -X POST http://localhost:3000/api/predict \
@@ -74,6 +104,14 @@ curl -X POST http://localhost:3000/api/predict \
 ```
 
 #### Test Analysis with CSV Data
+
+**For PowerShell (Windows):**
+
+```powershell
+curl.exe -X POST "http://localhost:3000/api/analyze" -H "Content-Type: application/json" -d '{\"source\": \"csv\", \"csvData\": {\"time\": [1,2,3,4,5,6,7,8,9,10], \"flux\": [1.0,0.99,1.01,0.98,1.0,0.99,1.01,0.97,1.0,0.99]}}'
+```
+
+**For Bash (Linux/Mac):**
 
 ```bash
 curl -X POST http://localhost:3000/api/analyze \
@@ -133,6 +171,27 @@ curl -X POST http://localhost:3000/api/analyze \
 - Large datasets (>10k points) may take longer to process
 - Consider implementing caching for frequently accessed TIC IDs
 
+## Windows-Specific Issues
+
+### PowerShell curl Commands
+
+- Use `curl.exe` instead of `curl` to avoid PowerShell aliases
+- Escape quotes in JSON: `\"` instead of `"`
+- Use single-line format for complex JSON
+
+### Python Module Issues
+
+1. Install dependencies: `pip install -r requirements.txt`
+2. If pip fails, try: `python -m pip install pandas numpy astropy joblib scikit-learn`
+3. Check Python version: `python --version` (should be 3.8+)
+4. Verify installation: `python -c "import astropy; print('astropy installed')"`
+
+### Path Issues
+
+- Ensure you're in the correct directory when running commands
+- Use absolute paths if relative paths fail
+- Check that Python is in your system PATH
+
 ## Debug Tips
 
 1. Check browser developer console for frontend errors
@@ -140,3 +199,4 @@ curl -X POST http://localhost:3000/api/analyze \
 3. Test Python CLI separately to isolate issues
 4. Verify file paths are correct for your system
 5. Check that all required dependencies are installed
+6. For Windows: Use `curl.exe` and escape JSON properly

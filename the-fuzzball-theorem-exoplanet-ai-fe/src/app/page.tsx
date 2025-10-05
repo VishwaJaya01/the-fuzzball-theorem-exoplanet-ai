@@ -96,7 +96,7 @@ export default function Home() {
             <section id="actions" className="scroll-mt-20">
               <ActionsMenu 
                 result={result} 
-                apiUrl={process.env.BACKEND_API_URL || ''}
+                apiUrl={process.env.BACKEND_API_URL || process.env.BACKEND_API_URL_PROD || ''}
               />
             </section>
 

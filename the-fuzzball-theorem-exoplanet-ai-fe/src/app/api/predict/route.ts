@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { AnalysisResult, PredictPayload, TransitDetection } from "@/lib/types";
 
-const BACKEND_API_URL = process.env.BACKEND_API_URL;
+const BACKEND_API_URL = process.env.BACKEND_API_URL || process.env.BACKEND_API_URL_PROD || "";
 
 interface BackendPrediction {
   tic_id?: number | string;

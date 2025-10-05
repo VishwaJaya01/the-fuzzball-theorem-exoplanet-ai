@@ -69,27 +69,8 @@ jobs:
           # Create .vercel directory and project.json
           mkdir -p .vercel
           echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
-          
-      - name: Create Vercel prebuilt output (.vercel/output)
-        working-directory: ./${{ env.APP_DIR }}
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: |
-          # Ensure vercel CLI is available and produce .vercel/output
-          npx vercel build --token "$VERCEL_TOKEN" --yes
 
-      - name: Set build path output
-        id: set-output-path
-        run: echo "path=.vercel/output" >> $GITHUB_OUTPUT
 
-      - name: Upload build artifact for debugging (optional)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: vercel-output
-          path: ${{ env.APP_DIR }}/.vercel/output
 
   deploy-production:
     name: Deploy to Production
@@ -110,17 +91,9 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
-      - name: Copy build output (from workspace)
-        run: |
-          # ensure we are in repo root, and the next step uses cwd to run deploy
-          ls -la ./${{ env.APP_DIR }} || true
-        working-directory: ./
-
-      - name: Verify build artifacts
+      - name: Install dependencies
         working-directory: ./${{ env.APP_DIR }}
-        run: |
-          echo "Checking for build artifacts..."
-          ls -la .vercel/output || echo "No .vercel/output directory found"
+        run: npm ci
           
       - name: Create Vercel project configuration for production
         working-directory: ./${{ env.APP_DIR }}
@@ -141,7 +114,7 @@ jobs:
           BACKEND_API_URL_PROD: ${{ secrets.BACKEND_API_URL_PROD }}
         run: |
           echo "Deploying to Vercel: PRODUCTION (main branch)"
-          npx vercel deploy --cwd . --prebuilt --prod --confirm --token "$VERCEL_TOKEN"
+          npx vercel deploy --cwd . --prod --yes --token "$VERCEL_TOKEN"
 
       - name: Print deployed URL (optional)
         working-directory: ./${{ env.APP_DIR }}
@@ -166,23 +139,9 @@ jobs:
       - name: Install Vercel CLI
         run: npm install -g vercel
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: vercel-output
-          path: ${{ env.APP_DIR }}/.vercel/output
-
-      - name: Copy build output (from workspace)
-        run: |
-          # ensure we are in repo root, and the next step uses cwd to run deploy
-          ls -la ./${{ env.APP_DIR }} || true
-        working-directory: ./
-
-      - name: Verify build artifacts
+      - name: Install dependencies
         working-directory: ./${{ env.APP_DIR }}
-        run: |
-          echo "Checking for build artifacts..."
-          ls -la .vercel/output || echo "No .vercel/output directory found"
+        run: npm ci
           
       - name: Create Vercel project configuration for preview
         working-directory: ./${{ env.APP_DIR }}
@@ -203,7 +162,7 @@ jobs:
           BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
         run: |
           echo "Creating Vercel Preview Build (branch: ${GITHUB_REF})"
-          npx vercel deploy --cwd . --prebuilt --confirm --token "$VERCEL_TOKEN"
+          npx vercel deploy --cwd . --yes --token "$VERCEL_TOKEN"
 
       - name: Print preview URL (optional)
         working-directory: ./${{ env.APP_DIR }}

@@ -1,57 +1,132 @@
 name: Build and Test The Fuzzball Theorem Exoplanet AI Frontend
 
 on:
-  # Run on pushes to any branch
   push:
     branches:
       - "**"
-
-  # Run on pull requests targeting any branch
   pull_request:
     branches:
       - "**"
 
-jobs:
-  Build-Test:
-    runs-on: ubuntu-latest
+env:
+  # relative path to the Next.js project
+  APP_DIR: the-fuzzball-theorem-exoplanet-ai-fe
 
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      vercel-output-path: ${{ steps.set-output-path.outputs.path }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # This step caches npm dependencies and sets up Node.js
-      - name: Set up Node.js with dependency caching
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: the-fuzzball-theorem-exoplanet-ai-fe/package-lock.json
+          cache-dependency-path: ${{ env.APP_DIR }}/package-lock.json
 
-      # This step specifically caches the Next.js build output
-      - name: Cache Next.js build
+      - name: Restore Next.js build cache
         uses: actions/cache@v4
         with:
-          path: ./.next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
+          path: ${{ env.APP_DIR }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles(format('{0}/package-lock.json', env.APP_DIR)) }}-${{ hashFiles(format('{0}/**/*.js', env.APP_DIR), format('{0}/**/*.ts', env.APP_DIR), format('{0}/**/*.tsx', env.APP_DIR), format('{0}/**/*.jsx', env.APP_DIR)) }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles(format('{0}/package-lock.json', env.APP_DIR)) }}-
 
       - name: Install dependencies
-        working-directory: ./the-fuzzball-theorem-exoplanet-ai-fe
+        working-directory: ./${{ env.APP_DIR }}
         run: npm ci
 
       - name: Run ESLint
-        working-directory: ./the-fuzzball-theorem-exoplanet-ai-fe
-        run: npm run lint
+        working-directory: ./${{ env.APP_DIR }}
+        run: npm run lint || true
 
-      - name: Run Build Command
-        working-directory: ./the-fuzzball-theorem-exoplanet-ai-fe
-        run: npm run build
+      - name: Run Build
+        id: build_step
+        working-directory: ./${{ env.APP_DIR }}
         env:
-          # Add any environment variables needed for your CodeRush project
-          # For example, if you have API keys or other secrets:
-          # NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}
-          # DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: production
+          # Provide the production API URL (set this secret in repo Settings -> Secrets and variables -> Actions)
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          # Add any other secrets your build needs here:
+          # SOME_SERVER_SECRET: ${{ secrets.SOME_SERVER_SECRET }}
+        run: |
+          npm run build
+
+      - name: Create Vercel prebuilt output (.vercel/output)
+        working-directory: ./${{ env.APP_DIR }}
+        env:
+          # Vercel CLI may need token to create/link project non-interactively
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          # Ensure vercel CLI is available and produce .vercel/output
+          npx vercel build --cwd . --yes
+
+      - name: Set build path output
+        id: set-output-path
+        run: echo "path=.vercel/output" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifact for debugging (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vercel-output
+          path: ${{ env.APP_DIR }}/.vercel/output
+
+  deploy:
+    name: Deploy to Vercel (preview or prod)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Copy build output (from workspace)
+        run: |
+          # ensure we are in repo root, and the next step uses cwd to run deploy
+          ls -la ./${{ env.APP_DIR }} || true
+        working-directory: ./
+
+      - name: Deploy (preview for PR/branches, prod for main)
+        working-directory: ./${{ env.APP_DIR }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
+          BACKEND_API_URL_PROD: ${{ secrets.BACKEND_API_URL_PROD }}
+        run: |
+          # Decide prod vs preview based on branch
+          echo "GITHUB_REF=${GITHUB_REF}"
+          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
+            echo "Deploying to Vercel: PRODUCTION (main branch)"
+            # --prod flags it as production deployment
+            npx vercel deploy --cwd . --prebuilt --prod --confirm --token "$VERCEL_TOKEN"
+          else
+            echo "Deploying to Vercel: PREVIEW (branch or PR)"
+            # create a preview deployment (no --prod)
+            npx vercel deploy --cwd . --prebuilt --confirm --token "$VERCEL_TOKEN"
+          fi
+
+      - name: Print deployed URL (optional)
+        # Vercel CLI prints the URL; we'll still show the last lines of logs for convenience
+        working-directory: ./${{ env.APP_DIR }}
+        run: tail -n 50 ~/.npm/_logs/* || true

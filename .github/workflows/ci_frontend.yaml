@@ -59,16 +59,26 @@ jobs:
         run: |
           npm run build
 
+      - name: Create Vercel project configuration
+        working-directory: ./${{ env.APP_DIR }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          # Create .vercel directory and project.json
+          mkdir -p .vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          
       - name: Create Vercel prebuilt output (.vercel/output)
         working-directory: ./${{ env.APP_DIR }}
         env:
-          # Vercel CLI may need token to create/link project non-interactively
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           # Ensure vercel CLI is available and produce .vercel/output
-          npx vercel build --cwd . --yes
+          npx vercel build --token "$VERCEL_TOKEN" --yes
 
       - name: Set build path output
         id: set-output-path
@@ -106,6 +116,16 @@ jobs:
           ls -la ./${{ env.APP_DIR }} || true
         working-directory: ./
 
+      - name: Create Vercel project configuration for production
+        working-directory: ./${{ env.APP_DIR }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          # Create .vercel directory and project.json
+          mkdir -p .vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          
       - name: Deploy to Production
         working-directory: ./${{ env.APP_DIR }}
         env:
@@ -146,6 +166,16 @@ jobs:
           ls -la ./${{ env.APP_DIR }} || true
         working-directory: ./
 
+      - name: Create Vercel project configuration for preview
+        working-directory: ./${{ env.APP_DIR }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          # Create .vercel directory and project.json
+          mkdir -p .vercel
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          
       - name: Create Preview Build
         working-directory: ./${{ env.APP_DIR }}
         env:

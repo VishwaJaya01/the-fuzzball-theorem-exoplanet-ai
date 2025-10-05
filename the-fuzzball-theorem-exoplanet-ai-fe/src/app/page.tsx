@@ -96,11 +96,7 @@ export default function Home() {
             <section id="actions" className="scroll-mt-20">
               <ActionsMenu 
                 result={result} 
-<<<<<<< HEAD
                 apiUrl={process.env.NEXT_PUBLIC_BACKEND_URL || 'https://jayasankha-exo-orbit-lab.hf.space'}
-=======
-                apiUrl={process.env.BACKEND_API_URL || ''}
->>>>>>> main
               />
             </section>
 

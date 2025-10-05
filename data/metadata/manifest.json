@@ -1,0 +1,14 @@
+{
+  "created_utc": "2025-10-04T18:55:30.515013Z",
+  "counts": {
+    "lightcurves_saved": 558,
+    "labels_rows": 558,
+    "tic_meta_rows": 558
+  },
+  "paths": {
+    "lightcurves_dir": "/content/data/processed/lightcurves",
+    "labels": "/content/data/processed/labels.parquet",
+    "tic_meta": "/content/data/processed/tic_meta.parquet"
+  },
+  "notes": "Light curves are PDCSAP-based, QUALITY-masked, lightly flattened. Labels=1 (confirmed)."
+}

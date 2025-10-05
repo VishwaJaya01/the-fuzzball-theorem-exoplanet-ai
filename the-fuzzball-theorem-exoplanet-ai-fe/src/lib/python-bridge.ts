@@ -104,49 +104,49 @@ export class PythonBridge {
   async loadLightCurveData(ticId: string): Promise<LightCurveData | null> {
     return new Promise((resolve, reject) => {
       const loadScript = `
-        import pandas as pd
-        import numpy as np
-        import json
-        import sys
-        from pathlib import Path
+import pandas as pd
+import numpy as np
+import json
+import sys
+from pathlib import Path
 
-        def load_tic_data(tic_id, data_dir):
-            try:
-                # Try to load from interim features folder
-                features_path = Path(data_dir) / "interim" / "features" / f"TIC-{tic_id}.parquet"
-                if features_path.exists():
-                    df = pd.read_parquet(features_path)
-                    if 'time' in df.columns and 'flux' in df.columns:
-                        result = {
-                            'time': df['time'].tolist(),
-                            'flux': df['flux'].tolist(),
-                        }
-                        if 'flux_err' in df.columns:
-                            result['flux_err'] = df['flux_err'].tolist()
-                        return result
-                
-                # Try lightcurves folder
-                lc_path = Path(data_dir) / "processed" / "lightcurves" / f"TIC-{tic_id}.parquet"
-                if lc_path.exists():
-                    df = pd.read_parquet(lc_path)
-                    result = {
-                        'time': df['time'].tolist(),
-                        'flux': df['flux'].tolist(),
-                    }
-                    if 'flux_err' in df.columns:
-                        result['flux_err'] = df['flux_err'].tolist()
-                    return result
-                    
-                return None
-                
-            except Exception as e:
-                return {"error": str(e)}
+def load_tic_data(tic_id, data_dir):
+    try:
+        # Try to load from interim features folder
+        features_path = Path(data_dir) / "interim" / "features" / f"TIC-{tic_id}.parquet"
+        if features_path.exists():
+            df = pd.read_parquet(features_path)
+            if 'time' in df.columns and 'flux' in df.columns:
+                result = {
+                    'time': df['time'].tolist(),
+                    'flux': df['flux'].tolist(),
+                }
+                if 'flux_err' in df.columns:
+                    result['flux_err'] = df['flux_err'].tolist()
+                return result
+        
+        # Try lightcurves folder
+        lc_path = Path(data_dir) / "processed" / "lightcurves" / f"TIC-{tic_id}.parquet"
+        if lc_path.exists():
+            df = pd.read_parquet(lc_path)
+            result = {
+                'time': df['time'].tolist(),
+                'flux': df['flux'].tolist(),
+            }
+            if 'flux_err' in df.columns:
+                result['flux_err'] = df['flux_err'].tolist()
+            return result
+            
+        return None
+        
+    except Exception as e:
+        return {"error": str(e)}
 
-        if __name__ == "__main__":
-            tic_id = sys.argv[1]
-            data_dir = sys.argv[2]
-            result = load_tic_data(tic_id, data_dir)
-            print(json.dumps(result))
+if __name__ == "__main__":
+    tic_id = sys.argv[1]
+    data_dir = sys.argv[2]
+    result = load_tic_data(tic_id, data_dir)
+    print(json.dumps(result))
         `;
 
       const python = spawn("python", ["-c", loadScript, ticId, this.dataDir]);
@@ -188,37 +188,37 @@ export class PythonBridge {
   async getStarMetadata(ticId: string): Promise<Record<string, any> | null> {
     return new Promise((resolve, reject) => {
       const metaScript = `
-        import pandas as pd
-        import json
-        import sys
-        from pathlib import Path
+import pandas as pd
+import json
+import sys
+from pathlib import Path
 
-        def get_tic_metadata(tic_id, data_dir):
-            try:
-                meta_path = Path(data_dir) / "processed" / "tic_meta.parquet"
-                if meta_path.exists():
-                    df = pd.read_parquet(meta_path)
-                    # Look for TIC ID in various possible column names
-                    tic_cols = ['TIC', 'tic_id', 'tic', 'ID']
-                    tic_col = None
-                    for col in tic_cols:
-                        if col in df.columns:
-                            tic_col = col
-                            break
-                    
-                    if tic_col:
-                        row = df[df[tic_col].astype(str) == str(tic_id)]
-                        if len(row) > 0:
-                            return row.iloc[0].to_dict()
-                return None
-            except Exception as e:
-                return {"error": str(e)}
+def get_tic_metadata(tic_id, data_dir):
+    try:
+        meta_path = Path(data_dir) / "processed" / "tic_meta.parquet"
+        if meta_path.exists():
+            df = pd.read_parquet(meta_path)
+            # Look for TIC ID in various possible column names
+            tic_cols = ['TIC', 'tic_id', 'tic', 'ID']
+            tic_col = None
+            for col in tic_cols:
+                if col in df.columns:
+                    tic_col = col
+                    break
+            
+            if tic_col:
+                row = df[df[tic_col].astype(str) == str(tic_id)]
+                if len(row) > 0:
+                    return row.iloc[0].to_dict()
+        return None
+    except Exception as e:
+        return {"error": str(e)}
 
-        if __name__ == "__main__":
-            tic_id = sys.argv[1]
-            data_dir = sys.argv[2]
-            result = get_tic_metadata(tic_id, data_dir)
-            print(json.dumps(result, default=str))
+if __name__ == "__main__":
+    tic_id = sys.argv[1]
+    data_dir = sys.argv[2]
+    result = get_tic_metadata(tic_id, data_dir)
+    print(json.dumps(result, default=str))
         `;
 
       const python = spawn("python", ["-c", metaScript, ticId, this.dataDir]);

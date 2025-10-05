@@ -66,6 +66,8 @@ def main():
             if isinstance(obj, np.ndarray):
                 return obj.tolist()
             elif isinstance(obj, (np.float32, np.float64)):
+                if np.isnan(obj) or np.isinf(obj):
+                    return None
                 return float(obj)
             elif isinstance(obj, (np.int32, np.int64)):
                 return int(obj)
@@ -73,7 +75,7 @@ def main():
                 return {k: convert_numpy(v) for k, v in obj.items()}
             elif isinstance(obj, list):
                 return [convert_numpy(v) for v in obj]
-            elif pd.isna(obj):
+            elif pd.isna(obj) or (isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj))):
                 return None
             return obj
         

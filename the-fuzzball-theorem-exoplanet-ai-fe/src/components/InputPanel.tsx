@@ -2,11 +2,12 @@
 
 import React, { useState, useRef, ChangeEvent } from 'react';
 import Papa from 'papaparse';
-import type { 
-  InputPanelProps, 
-  PredictPayload, 
+import { predictTransits } from '@/lib/api';
+import type {
+  InputPanelProps,
+  PredictPayload,
   UploadPreview,
-  Example 
+  Example,
 } from '@/lib/types';
 
 function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
@@ -14,6 +15,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
   const [ticId, setTicId] = useState('');
   const [sector, setSector] = useState<number | ''>('');
   const [uploadPreview, setUploadPreview] = useState<UploadPreview | null>(null);
+  const [csvDataFull, setCsvDataFull] = useState<PredictPayload['csvData'] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingTic, setIsFetchingTic] = useState(false);
   const [activeTab, setActiveTab] = useState<'tic' | 'csv'>('tic');
@@ -55,6 +57,10 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       }
     }
 
+    if (data.length < 200) {
+      errors.push('At least 200 rows are required for analysis');
+    }
+
     return { isValid: errors.length === 0, errors };
   };
 
@@ -74,11 +80,49 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
         const validation = validateCsvData(data);
         const columns = Object.keys(data[0] || {});
 
+        const timeValues: number[] = [];
+        const fluxValues: number[] = [];
+        const fluxErrValues: number[] = [];
+        let includeFluxErr = true;
+
+        data.forEach((row) => {
+          const timeVal = typeof row.time === 'number' ? row.time : Number(row.time);
+          const fluxVal = typeof row.flux === 'number' ? row.flux : Number(row.flux);
+
+          if (!Number.isFinite(timeVal) || !Number.isFinite(fluxVal)) {
+            includeFluxErr = false;
+            return;
+          }
+
+          timeValues.push(timeVal);
+          fluxValues.push(fluxVal);
+
+          if (row.flux_err === null || row.flux_err === undefined) {
+            includeFluxErr = false;
+            return;
+          }
+
+          const errVal = typeof row.flux_err === 'number' ? row.flux_err : Number(row.flux_err);
+          if (Number.isFinite(errVal)) {
+            fluxErrValues.push(errVal);
+          } else {
+            includeFluxErr = false;
+          }
+        });
+
+        const fullCsvData = {
+          time: timeValues,
+          flux: fluxValues,
+          flux_err: includeFluxErr && fluxErrValues.length === timeValues.length ? fluxErrValues : undefined,
+        };
+
+        setCsvDataFull(validation.isValid ? fullCsvData : null);
+
         const preview: UploadPreview = {
           fileName: file.name,
           rowCount: data.length,
           columns,
-          preview: data.slice(0, 10),
+          preview: data.slice(0, Math.min(10, data.length)),
           isValid: validation.isValid,
           errors: validation.errors,
         };
@@ -97,6 +141,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
         setIsLoading(false);
       },
       error: (error) => {
+        setCsvDataFull(null);
         setUploadPreview({
           fileName: file.name,
           rowCount: 0,
@@ -112,17 +157,18 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
 
   // Handle TIC fetch
   const handleFetchTic = async () => {
-    if (!ticId || !onPredict) return;
+    if (!ticId) return;
 
     setIsFetchingTic(true);
     try {
+      const predictor = onPredict ?? predictTransits;
       const payload: PredictPayload = {
         ticId,
         sector: sector || undefined,
         source: 'tic',
       };
 
-      await onPredict(payload);
+      await predictor(payload);
     } catch (error) {
       console.error('Error fetching TIC data:', error);
     } finally {
@@ -132,8 +178,8 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
 
   // Handle predict button click
   const handlePredict = async () => {
-    if (!onPredict) return;
-    
+    const predictor = onPredict ?? predictTransits;
+
     setIsLoading(true);
     try {
       let payload: PredictPayload;
@@ -144,25 +190,16 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
           sector: sector || undefined,
           source: 'tic',
         };
-      } else if (activeTab === 'csv' && uploadPreview?.isValid) {
-        // Convert preview data to the expected format
-        const csvData = {
-          time: uploadPreview.preview.map(row => row.time as number),
-          flux: uploadPreview.preview.map(row => row.flux as number),
-          flux_err: uploadPreview.columns.includes('flux_err') 
-            ? uploadPreview.preview.map(row => row.flux_err as number)
-            : undefined,
-        };
-
+      } else if (activeTab === 'csv' && uploadPreview?.isValid && csvDataFull) {
         payload = {
-          csvData,
+          csvData: csvDataFull,
           source: 'csv',
         };
       } else {
         return;
       }
 
-      await onPredict(payload);
+      await predictor(payload);
     } catch (error) {
       console.error('Error predicting:', error);
     } finally {
@@ -196,7 +233,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
     if (activeTab === 'tic') {
       return ticId.trim() !== '';
     }
-    return uploadPreview?.isValid || false;
+    return Boolean(uploadPreview?.isValid && csvDataFull);
   };
 
   return (
@@ -557,3 +594,4 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
 }
 
 export default InputPanel;
+

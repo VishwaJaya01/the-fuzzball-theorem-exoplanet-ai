@@ -1,0 +1,29 @@
+INFO:     127.0.0.1:62607 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62608 - "GET /version HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52923 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52924 - "GET /version HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52932 - "GET /health HTTP/1.1" 200 OK
+{"ts": "2025-10-05T16:52:15.804881+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 154, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:62288 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+{"ts": "2025-10-05T16:52:19.248601+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 102, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:62290 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+{"ts": "2025-10-05T16:52:20.856982+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 94, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:62292 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+{"ts": "2025-10-05T16:52:22.239959+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 92, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:62294 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+{"ts": "2025-10-05T16:52:26.689241+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 95, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:62296 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:64460 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64461 - "GET /version HTTP/1.1" 200 OK
+{"ts": "2025-10-05T16:52:37.378393+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 88, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:64460 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:53216 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53217 - "GET /version HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61829 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61830 - "GET /version HTTP/1.1" 200 OK
+{"ts": "2025-10-05T16:55:23.712946+00:00", "level": "INFO", "logger": "app.models.infer", "message": "prediction_complete", "name": "app.models.infer", "tic_id": 286923464, "mode": "one_class", "runtime_ms": 145, "score": 0.4417219188061935, "cache_hit": true, "auto_fetch": false}
+INFO:     127.0.0.1:62834 - "GET /predict/by_tic?tic_id=286923464 HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:62206 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62207 - "GET /version HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56736 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56737 - "GET /version HTTP/1.1" 200 OK

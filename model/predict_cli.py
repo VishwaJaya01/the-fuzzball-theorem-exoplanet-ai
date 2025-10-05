@@ -8,6 +8,7 @@ Usage: echo '{"time": [...], "flux": [...], "model_dir": "..."}' | python predic
 import json
 import sys
 import numpy as np
+import pandas as pd
 from pathlib import Path
 
 # Add the model directory to path to import predict module

@@ -1,202 +1,90 @@
-# Integration Testing Guide
+# Testing Guide
 
-This guide helps you test the complete exoplanet detection system integration.
+This guide helps you test the exoplanet detection system.
 
 ## Prerequisites
 
 1. **Python Environment**: Ensure Python is installed with required packages:
 
    ```bash
-   pip install -r requirements.txt
-   ```
-
-   Or manually:
-
-   ```bash
    pip install pandas numpy astropy joblib scikit-learn
    ```
 
-2. **Model Artifacts**: Ensure the model files exist in `data/model/`:
+2. **Model Files**: Verify model artifacts exist in `data/model/`:
 
-   - `latest.txt`
-   - `model_iso_v1_oc.pkl`
-   - `scaler_v1_oc.pkl`
-   - `feature_names_v1_oc.json`
-   - `metrics_v1_oc.json`
+   - `latest.txt`, `model_iso_v1_oc.pkl`, `scaler_v1_oc.pkl`, `feature_names_v1_oc.json`
 
-3. **Data Files**: Ensure preprocessed data exists in:
-   - `data/interim/features/` (TIC parquet files)
-   - `data/processed/` (metadata and lightcurves)
+3. **Data Files**: Ensure lightcurve data exists in:
+   - `data/processed/lightcurves/` (TIC parquet files)
 
-## Testing Steps
+## Quick Start
 
-### 1. Test API Health Check
-
-Start your Next.js development server:
+### 1. Start the Application
 
 ```bash
 cd the-fuzzball-theorem-exoplanet-ai-fe
 npm run dev
 ```
 
-Then test the health endpoint:
+Open http://localhost:3000 in your browser.
 
-**For PowerShell (Windows):**
+### 2. Test with Known Planet Candidates
 
-```powershell
-curl.exe http://localhost:3000/api/health
-```
+Try these TIC IDs from the dataset:
 
-**For Bash (Linux/Mac):**
+- **TIC 148673433** - High confidence candidate
+- **TIC 396740648** - Deep transit detection
+- **TIC 254113311** - Good period candidate
+
+### 3. Test API Health
 
 ```bash
 curl http://localhost:3000/api/health
 ```
 
-Expected response should show:
+Expected: `status: "ok"` with model version info.
 
-- `status: "ok"` or `status: "degraded"`
-- `ml_model: "loaded"`
-- `data_service: "available"`
-- Model version information
+## Expected Results
 
-### 2. Test Python CLI Interface
+### Confidence Scoring
 
-Test the Python CLI directly:
+The system uses robust confidence calculation based on transit parameters:
 
-```bash
-cd model
-echo '{"time": [1,2,3,4,5], "flux": [1.0,0.99,1.0,0.98,1.0]}' | python predict_cli.py
-```
+- **≥70%**: "Likely Planet" (high confidence)
+- **40-69%**: "Possible Planet" (medium confidence)
+- **15-39%**: "Unlikely Planet" (low confidence)
+- **<15%**: "No Transit Detected"
 
-Expected output: JSON with score, features, and warnings.
+### For TIC 148673433 (Test Case)
 
-### 3. Test API Endpoints
+- **Expected Score**: ~72%
+- **Label**: "Likely Planet"
+- **Parameters**: Period ~3.77 days, Depth ~944 ppm
 
-#### Test TESS Data Loading
+## Common Issues
 
-**For PowerShell (Windows):**
+**Issue**: All detections show 0% confidence
 
-```powershell
-curl.exe "http://localhost:3000/api/tess?ticId=123456789"
-```
+- **Solution**: Check model files exist in `data/model/`
 
-**For Bash (Linux/Mac):**
+**Issue**: "No light curve data found"
 
-```bash
-curl "http://localhost:3000/api/tess?ticId=123456789"
-```
+- **Solution**: Verify TIC ID exists in `data/processed/lightcurves/`
 
-#### Test Prediction with TIC ID
+**Issue**: Python/API errors
 
-**For PowerShell (Windows):**
+- **Solution**: Ensure all dependencies installed via `pip install pandas numpy astropy joblib scikit-learn`
 
-```powershell
-curl.exe -X POST "http://localhost:3000/api/predict" -H "Content-Type: application/json" -d '{\"source\": \"tic\", \"ticId\": \"123456789\"}'
-```
+## Architecture Notes
 
-**For Bash (Linux/Mac):**
+- **Frontend**: Next.js React app with TypeScript
+- **Backend**: Python CLI integration via spawn processes
+- **ML Model**: IsolationForest anomaly detection with BLS feature extraction
+- **Scoring**: Robust parameter-based confidence calculation with ML fallback
+- **Data**: Preprocessed TESS lightcurves and candidate metadata
 
-```bash
-curl -X POST http://localhost:3000/api/predict \
-  -H "Content-Type: application/json" \
-  -d '{"source": "tic", "ticId": "123456789"}'
-```
+## Performance
 
-#### Test Analysis with CSV Data
-
-**For PowerShell (Windows):**
-
-```powershell
-curl.exe -X POST "http://localhost:3000/api/analyze" -H "Content-Type: application/json" -d '{\"source\": \"csv\", \"csvData\": {\"time\": [1,2,3,4,5,6,7,8,9,10], \"flux\": [1.0,0.99,1.01,0.98,1.0,0.99,1.01,0.97,1.0,0.99]}}'
-```
-
-**For Bash (Linux/Mac):**
-
-```bash
-curl -X POST http://localhost:3000/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{
-    "source": "csv",
-    "csvData": {
-      "time": [1,2,3,4,5,6,7,8,9,10],
-      "flux": [1.0,0.99,1.01,0.98,1.0,0.99,1.01,0.97,1.0,0.99]
-    }
-  }'
-```
-
-### 4. Test Frontend Integration
-
-1. Open http://localhost:3000 in your browser
-2. Try entering a TIC ID that exists in your dataset
-3. Try uploading a CSV file with time and flux columns
-4. Verify that results display properly with:
-   - Light curve plot
-   - Detection scores
-   - Model warnings
-   - Star metadata (if available)
-
-## Expected Test Results
-
-### Successful Integration Should Show:
-
-- Health check returns model loaded status
-- Python CLI processes light curve data
-- API endpoints return real predictions (not mock data)
-- Frontend displays actual light curves and scores
-- Error handling works for invalid TIC IDs
-
-### Common Issues and Solutions:
-
-**Issue**: `Python script failed` error
-
-- **Solution**: Check Python is in PATH, required packages installed
-
-**Issue**: `No light curve data found for TIC X`
-
-- **Solution**: Verify TIC ID exists in your preprocessed dataset
-
-**Issue**: `Model loading failed`
-
-- **Solution**: Check model artifacts exist and are valid
-
-**Issue**: `Failed to parse Python output`
-
-- **Solution**: Check for Python syntax errors or missing dependencies
-
-## Performance Notes
-
-- First API call may be slow (model loading)
-- Subsequent calls should be faster (model cached)
-- Large datasets (>10k points) may take longer to process
-- Consider implementing caching for frequently accessed TIC IDs
-
-## Windows-Specific Issues
-
-### PowerShell curl Commands
-
-- Use `curl.exe` instead of `curl` to avoid PowerShell aliases
-- Escape quotes in JSON: `\"` instead of `"`
-- Use single-line format for complex JSON
-
-### Python Module Issues
-
-1. Install dependencies: `pip install -r requirements.txt`
-2. If pip fails, try: `python -m pip install pandas numpy astropy joblib scikit-learn`
-3. Check Python version: `python --version` (should be 3.8+)
-4. Verify installation: `python -c "import astropy; print('astropy installed')"`
-
-### Path Issues
-
-- Ensure you're in the correct directory when running commands
-- Use absolute paths if relative paths fail
-- Check that Python is in your system PATH
-
-## Debug Tips
-
-1. Check browser developer console for frontend errors
-2. Check terminal logs for Python/Node.js errors
-3. Test Python CLI separately to isolate issues
-4. Verify file paths are correct for your system
-5. Check that all required dependencies are installed
-6. For Windows: Use `curl.exe` and escape JSON properly
+- First prediction may be slower (model loading)
+- Subsequent calls are faster (model cached)
+- ~15K data points per lightcurve processed efficiently

@@ -1,0 +1,250 @@
+# Backend Configuration for The Fuzzball Theorem Exoplanet AI
+# This file contains configuration for deployment, environment setup, and service configuration
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: exoplanet-ai-backend-config
+  labels:
+    app: exoplanet-ai-backend
+    version: v1
+
+# Application Configuration
+app:
+  name: "The Fuzzball Theorem Exoplanet AI Backend"
+  version: "1.0.0"
+  description: "Machine learning backend for exoplanet detection using lightcurve analysis"
+  
+  # Server Configuration
+  server:
+    host: "0.0.0.0"
+    port: 8000
+    debug: false
+    workers: 4
+    timeout: 300
+    max_request_size: "100MB"
+    
+  # API Configuration
+  api:
+    prefix: "/api/v1"
+    cors:
+      enabled: true
+      origins: ["*"]
+      methods: ["GET", "POST", "OPTIONS"]
+      headers: ["Content-Type", "Authorization"]
+    
+    # Rate limiting
+    rate_limit:
+      enabled: true
+      requests_per_minute: 100
+      burst_size: 20
+
+# Python Environment
+python:
+  version: "3.9+"
+  requirements_file: "requirements.txt"
+  
+  # Package Dependencies
+  dependencies:
+    core:
+      - "pandas>=1.5.0"
+      - "numpy>=1.21.0"
+      - "astropy>=5.0.0"
+      - "joblib>=1.0.0"
+      - "scikit-learn>=1.0.0"
+    
+    web:
+      - "fastapi>=0.68.0"
+      - "uvicorn>=0.15.0"
+      - "pydantic>=1.8.0"
+    
+    optional:
+      - "xgboost>=1.4.0"
+      - "matplotlib>=3.3.0"
+      - "seaborn>=0.11.0"
+
+# Model Configuration
+model:
+  # Model storage paths
+  paths:
+    model_dir: "./data/model"
+    artifacts_dir: "./artifacts"
+    features_dir: "./data/interim/features"
+    
+  # Model types supported
+  types:
+    - name: "one_class"
+      description: "Isolation Forest + Quantile Transformer"
+      files:
+        - "model_iso_v1_oc.pkl"
+        - "scaler_v1_oc.pkl"
+        - "feature_names_v1_oc.json"
+        
+    - name: "supervised"
+      description: "XGBoost + Platt Calibration"
+      files:
+        - "model_xgb_v*.pkl"
+        - "calibrator_v*.pkl"
+        - "feature_names_*.json"
+  
+  # Model performance thresholds
+  performance:
+    min_accuracy: 0.85
+    max_inference_time_ms: 5000
+    max_memory_usage_mb: 2048
+
+# Data Processing Configuration
+data:
+  # Input validation
+  validation:
+    max_lightcurve_points: 10000
+    min_lightcurve_points: 100
+    required_fields: ["time", "flux"]
+    optional_fields: ["flux_err", "meta"]
+    
+  # Feature extraction
+  features:
+    bls_enabled: true
+    transit_detection: true
+    statistical_features: true
+    
+  # Data format
+  formats:
+    input: ["json", "parquet", "csv"]
+    output: ["json"]
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  handlers:
+    console:
+      enabled: true
+      level: "INFO"
+      
+    file:
+      enabled: true
+      level: "DEBUG"
+      path: "./logs/backend.log"
+      max_size_mb: 100
+      backup_count: 5
+
+# Monitoring and Health Checks
+monitoring:
+  health_check:
+    endpoint: "/health"
+    interval_seconds: 30
+    timeout_seconds: 10
+    
+  metrics:
+    endpoint: "/metrics"
+    enabled: true
+    
+  alerts:
+    high_memory_usage: 0.85
+    high_cpu_usage: 0.80
+    slow_response_time_ms: 10000
+
+# Security Configuration
+security:
+  # API Key authentication (if needed)
+  api_keys:
+    enabled: false
+    header_name: "X-API-Key"
+    
+  # Input sanitization
+  input_validation:
+    strict_mode: true
+    max_input_size: "10MB"
+    
+  # CORS settings
+  cors:
+    max_age_seconds: 3600
+    expose_headers: ["X-Request-ID"]
+
+# Environment-specific configurations
+environments:
+  development:
+    debug: true
+    log_level: "DEBUG"
+    reload: true
+    
+  testing:
+    debug: true
+    log_level: "DEBUG"
+    database_url: "sqlite:///test.db"
+    
+  staging:
+    debug: false
+    log_level: "INFO"
+    workers: 2
+    
+  production:
+    debug: false
+    log_level: "WARNING"
+    workers: 8
+    ssl_enabled: true
+
+# Docker Configuration
+docker:
+  base_image: "python:3.9-slim"
+  working_dir: "/app"
+  
+  ports:
+    - "8000:8000"
+    
+  volumes:
+    - "./data:/app/data:ro"
+    - "./artifacts:/app/artifacts:ro"
+    - "./logs:/app/logs"
+    
+  environment:
+    PYTHONPATH: "/app"
+    ENVIRONMENT: "production"
+    
+  health_check:
+    test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+    interval: "30s"
+    timeout: "10s"
+    retries: 3
+
+# CI/CD Configuration
+ci_cd:
+  # Testing configuration
+  testing:
+    unit_tests: true
+    integration_tests: true
+    coverage_threshold: 0.80
+    
+  # Build configuration  
+  build:
+    python_version: "3.9"
+    requirements_install: true
+    lint_check: true
+    type_check: false
+    
+  # Deployment stages
+  deployment:
+    stages: ["test", "staging", "production"]
+    auto_deploy_branches: ["main"]
+    manual_approval_required: true
+
+# Performance Configuration
+performance:
+  # Caching
+  cache:
+    enabled: true
+    ttl_seconds: 3600
+    max_size_mb: 512
+    
+  # Connection pooling
+  connection_pool:
+    max_connections: 100
+    min_connections: 10
+    
+  # Batch processing
+  batch_processing:
+    enabled: true
+    max_batch_size: 50
+    timeout_seconds: 60

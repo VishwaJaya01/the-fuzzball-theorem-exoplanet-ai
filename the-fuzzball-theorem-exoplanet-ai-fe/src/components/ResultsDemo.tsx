@@ -218,9 +218,9 @@ export default function ResultsDemo() {
       {/* ResultsCard */}
       <ResultsCard
         result={examples[selectedExample]}
-        onCopyJson={() => console.log('JSON copied')}
-        onDownloadCsv={() => console.log('CSV downloaded')}
-        onCopyApiCurl={() => console.log('API curl copied')}
+        onCopyJson={() => {}}
+        onDownloadCsv={() => {}}
+        onCopyApiCurl={() => {}}
       />
 
       {/* Features List */}

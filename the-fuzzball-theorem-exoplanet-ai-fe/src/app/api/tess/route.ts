@@ -42,10 +42,9 @@ export async function GET(request: Request) {
     };
 
     return NextResponse.json(mockTessData);
-  } catch (error) {
-    console.error('TESS data fetch error:', error);
+  } catch {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to fetch TESS data' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

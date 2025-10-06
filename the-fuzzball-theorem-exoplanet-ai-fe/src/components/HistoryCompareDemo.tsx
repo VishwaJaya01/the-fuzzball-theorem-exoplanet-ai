@@ -363,7 +363,7 @@ function HistoryCompareDemo() {
 
 <HistoryCompare
   history={analysisHistory}
-  onSelect={(items) => console.log('Selected:', items)}
+  onSelect={() => {}}
   maxCompare={3}
 />`}
         </pre>

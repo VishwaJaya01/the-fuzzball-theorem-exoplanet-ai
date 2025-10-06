@@ -11,11 +11,13 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
   });
   const [showAboutModal, setShowAboutModal] = useState(false);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_API_URL_PROD;
+
   // Check API status on mount and periodically
   useEffect(() => {
     const checkApiStatus = async () => {
       try {
-        const response = await fetch('/api/health', { method: 'GET' });
+        const response = await fetch(`${API_BASE_URL}/health`, { method: 'GET' });
         const data = await response.json();
         setApiStatus({
           isOnline: response.ok,

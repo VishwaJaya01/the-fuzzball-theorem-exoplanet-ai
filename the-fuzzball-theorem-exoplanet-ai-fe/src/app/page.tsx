@@ -38,19 +38,18 @@ export default function Home() {
         timestamp: new Date().toISOString(),
         ticId: analysisResult.data.target.tic_id,
         sector: analysisResult.data.target.sector,
-        score: analysisResult.data.detections.length > 0 
+        score: (analysisResult.data.detections?.length || 0) > 0 
           ? Math.max(...analysisResult.data.detections.map(d => d.confidence))
           : 0,
-        detectionCount: analysisResult.data.detections.length,
+        detectionCount: analysisResult.data.detections?.length || 0,
         result: analysisResult,
       };
       setHistory(prev => [historyItem, ...prev].slice(0, 10)); // Keep last 10
     }
   };
 
-  const handleHistorySelect = (items: HistoryItem[]) => {
+  const handleHistorySelect = () => {
     // Optional: Do something when history items are selected
-    console.log('Selected history items:', items);
   };
 
   return (
@@ -59,8 +58,8 @@ export default function Home() {
       
       {/* Header Section */}
       <Header 
-        onOpenAbout={() => console.log('About clicked')}
-        onUploadClick={() => console.log('Upload clicked')}
+        onOpenAbout={() => {}}
+        onUploadClick={() => {}}
       />
 
       {/* Main Content */}
@@ -87,8 +86,8 @@ export default function Home() {
             {/* Status Alert */}
             <section id="results-status" className="scroll-mt-20">
               <StatusAlerts
-                status={result.data.detections.length > 0 ? 'success' : 'no-detection'}
-                detectionCount={result.data.detections.length}
+                status={(result.data.detections?.length || 0) > 0 ? 'success' : 'no-detection'}
+                detectionCount={result.data.detections?.length || 0}
               />
             </section>
 
@@ -124,7 +123,7 @@ export default function Home() {
             )}
 
             {/* Detection Results */}
-            {result.data.detections.length > 0 && (
+            {(result.data.detections?.length || 0) > 0 && (
               <section id="detections" className="scroll-mt-20">
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
@@ -136,7 +135,7 @@ export default function Home() {
             )}
 
             {/* 3D Planet Simulation */}
-            {result.data.detections.length > 0 && (
+            {(result.data.detections?.length || 0) > 0 && (
               <section id="simulation" className="scroll-mt-20">
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                   <div className="p-6 border-b border-gray-200 dark:border-gray-700">

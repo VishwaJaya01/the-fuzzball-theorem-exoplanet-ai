@@ -133,8 +133,8 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
         if (onUploadFile) {
           try {
             await onUploadFile(file);
-          } catch (error) {
-            console.error('Error uploading file:', error);
+          } catch {
+            // Handle file upload error silently
           }
         }
 
@@ -169,8 +169,8 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       };
 
       await predictor(payload);
-    } catch (error) {
-      console.error('Error fetching TIC data:', error);
+    } catch {
+      // Handle TIC fetch error silently
     } finally {
       setIsFetchingTic(false);
     }
@@ -200,8 +200,8 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
       }
 
       await predictor(payload);
-    } catch (error) {
-      console.error('Error predicting:', error);
+    } catch {
+      // Handle prediction error silently
     } finally {
       setIsLoading(false);
     }

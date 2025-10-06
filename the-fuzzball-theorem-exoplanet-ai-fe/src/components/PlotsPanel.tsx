@@ -59,9 +59,8 @@ function PlotsPanel({
           showSuccess('Plot exported as PNG!');
         }
       });
-    } catch (error) {
+    } catch {
       showError('Failed to export plot');
-      console.error('Export error:', error);
     } finally {
       setIsExporting(false);
     }

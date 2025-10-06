@@ -188,7 +188,6 @@ export async function POST(request: Request) {
     const analysis = buildAnalysisResult(payload, backendBody as BackendPrediction);
     return NextResponse.json(analysis);
   } catch (error) {
-    console.error("Prediction error:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Prediction failed" },
       { status: 500 },

@@ -10,7 +10,7 @@
 An AI-powered web application for detecting exoplanets from TESS (Transiting Exoplanet Survey Satellite) light curve data using machine learning. This project was developed for the **NASA Space Apps Challenge 2025** and combines advanced signal processing, Box Least Squares (BLS) algorithm, and XGBoost classification to identify potential exoplanet transit signals.
 
 **🚀 Deployment:**
-- **Frontend**: Deployed on [Vercel](https://vercel.com) with automated CI/CD
+- **Frontend**: Deployed on [Vercel](https://the-fuzzball-theorem-exoplanet-ai-f.vercel.app/) with automated CI/CD
 - **Backend**: Deployed on [HuggingFace Spaces](https://huggingface.co/spaces) 
 - **CI/CD**: Automated pipelines using GitHub Actions for continuous integration and deployment
 

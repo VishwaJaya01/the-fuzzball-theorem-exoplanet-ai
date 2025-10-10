@@ -334,6 +334,22 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
               </select>
             </div>
           </div>
+          {/* Sample TIC ID Chips */}
+          <div className="col-span-full mt-2 flex flex-wrap gap-2 items-center">
+            <span className="text-xs text-gray-500 dark:text-gray-400 mr-2 flex items-center h-7">
+              Sample TIC IDs:
+            </span>
+            {["307210830", "148673433"].map((sample) => (
+              <button
+                key={sample}
+                type="button"
+                className="px-3 py-1.5 text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/30 rounded-full border border-blue-300 dark:border-blue-700 hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+                onClick={() => setTicId(sample)}
+              >
+                #{sample}
+              </button>
+            ))}
+          </div>
 
           {/* Fetch Lightcurve Button */}
           {ticId && (
@@ -591,7 +607,7 @@ function InputPanel({ onPredict, onUploadFile, examples }: InputPanelProps) {
         <button
           onClick={handlePredict}
           disabled={!isPredictEnabled() || isLoading}
-          className="w-full sm:w-auto px-6 py-3 text-base font-semibold text-white bg-blue-600 
+          className="w-full px-6 py-3 text-base font-semibold text-white bg-blue-600 
                    hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600
                    rounded-lg transition-colors shadow-sm hover:shadow-md
                    disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-sm

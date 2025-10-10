@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { ActionsMenuProps } from "@/lib/types";
 import { showSuccess, showError } from "@/lib/toast";
 
@@ -11,6 +11,18 @@ import { showSuccess, showError } from "@/lib/toast";
 function ActionsMenu({ result, apiUrl }: ActionsMenuProps) {
   const [showApiModal, setShowApiModal] = useState(false);
   const [apiEndpoint, setApiEndpoint] = useState<"tic" | "upload">("tic");
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (showApiModal) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [showApiModal]);
 
   // Download as JSON
   const downloadJSON = () => {

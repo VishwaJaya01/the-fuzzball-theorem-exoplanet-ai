@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
-import Header from '@/components/Header';
-import InputPanel from '@/components/InputPanel';
-import StatusAlerts from '@/components/StatusAlerts';
-import ResultsCard from '@/components/ResultsCard';
-import StarMetaCard from '@/components/StarMetaCard';
-import PlotsPanel from '@/components/PlotsPanel';
-import PlanetSimulation from '@/components/PlanetSimulation';
-import WhyPanel from '@/components/WhyPanel';
-import ActionsMenu from '@/components/ActionsMenu';
-import HistoryCompare from '@/components/HistoryCompare';
-import { predictTransits } from '@/lib/api';
-import type { PredictResult, HistoryItem, PredictPayload } from '@/lib/types';
+import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import Header from "@/components/Header";
+import InputPanel from "@/components/InputPanel";
+import StatusAlerts from "@/components/StatusAlerts";
+import ResultsCard from "@/components/ResultsCard";
+import StarMetaCard from "@/components/StarMetaCard";
+import PlotsPanel from "@/components/PlotsPanel";
+import PlanetSimulation from "@/components/PlanetSimulation";
+import WhyPanel from "@/components/WhyPanel";
+import ActionsMenu from "@/components/ActionsMenu";
+import HistoryCompare from "@/components/HistoryCompare";
+import { predictTransits } from "@/lib/api";
+import type { PredictResult, HistoryItem, PredictPayload } from "@/lib/types";
 
 export default function Home() {
   const [result, setResult] = useState<PredictResult | null>(null);
@@ -32,19 +32,22 @@ export default function Home() {
     setIsAnalyzing(false);
 
     // Add to history if successful
-    if (analysisResult.status === 'success' && analysisResult.data) {
+    if (analysisResult.status === "success" && analysisResult.data) {
       const historyItem: HistoryItem = {
         id: `hist_${Date.now()}`,
         timestamp: new Date().toISOString(),
         ticId: analysisResult.data.target.tic_id,
         sector: analysisResult.data.target.sector,
-        score: (analysisResult.data.detections?.length || 0) > 0 
-          ? Math.max(...analysisResult.data.detections.map(d => d.confidence))
-          : 0,
+        score:
+          (analysisResult.data.detections?.length || 0) > 0
+            ? Math.max(
+                ...analysisResult.data.detections.map((d) => d.confidence)
+              )
+            : 0,
         detectionCount: analysisResult.data.detections?.length || 0,
         result: analysisResult,
       };
-      setHistory(prev => [historyItem, ...prev].slice(0, 10)); // Keep last 10
+      setHistory((prev) => [historyItem, ...prev].slice(0, 10)); // Keep last 10
     }
   };
 
@@ -55,16 +58,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <Toaster position="top-right" />
-      
+
       {/* Header Section */}
-      <Header 
-        onOpenAbout={() => {}}
-        onUploadClick={() => {}}
-      />
+      <Header onOpenAbout={() => {}} onUploadClick={() => {}} />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 space-y-8 max-w-7xl">
-        
+      <main className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-6 sm:py-8 space-y-8">
         {/* Input Section */}
         <section id="input" className="scroll-mt-20">
           <InputPanel
@@ -81,21 +80,29 @@ export default function Home() {
         )}
 
         {/* Results Section */}
-        {result && result.status === 'success' && result.data && (
+        {result && result.status === "success" && result.data && (
           <>
             {/* Status Alert */}
             <section id="results-status" className="scroll-mt-20">
               <StatusAlerts
-                status={(result.data.detections?.length || 0) > 0 ? 'success' : 'no-detection'}
+                status={
+                  (result.data.detections?.length || 0) > 0
+                    ? "success"
+                    : "no-detection"
+                }
                 detectionCount={result.data.detections?.length || 0}
               />
             </section>
 
             {/* Action Menu */}
             <section id="actions" className="scroll-mt-20">
-              <ActionsMenu 
-                result={result} 
-                apiUrl={process.env.BACKEND_API_URL || process.env.BACKEND_API_URL_PROD || ''}
+              <ActionsMenu
+                result={result}
+                apiUrl={
+                  process.env.BACKEND_API_URL ||
+                  process.env.BACKEND_API_URL_PROD ||
+                  ""
+                }
               />
             </section>
 
@@ -129,7 +136,10 @@ export default function Home() {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                     <span>🪐</span> Detection Results
                   </h2>
-                  <ResultsCard result={result} detections={result.data.detections} />
+                  <ResultsCard
+                    result={result}
+                    detections={result.data.detections}
+                  />
                 </div>
               </section>
             )}
@@ -186,7 +196,7 @@ export default function Home() {
         )}
 
         {/* Error State */}
-        {result && result.status === 'error' && (
+        {result && result.status === "error" && (
           <section id="error" className="scroll-mt-20">
             <StatusAlerts status="error" errorMessage={result.error} />
           </section>
@@ -251,7 +261,8 @@ export default function Home() {
                 </div>
                 <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    👆 <strong>Get started:</strong> Enter a TIC ID or upload TESS data above
+                    👆 <strong>Get started:</strong> Enter a TIC ID or upload
+                    TESS data above
                   </p>
                 </div>
               </div>
@@ -265,8 +276,8 @@ export default function Home() {
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              <strong className="text-gray-900 dark:text-white">ExoFind</strong> • 
-              Powered by the Fuzzball Theorem • Built with Next.js & Three.js
+              <strong className="text-gray-900 dark:text-white">ExoFind</strong>{" "}
+              • Powered by the Fuzzball Theorem • Built with Next.js & Three.js
             </div>
             <div className="flex gap-6 text-sm">
               <a
@@ -300,4 +311,3 @@ export default function Home() {
     </div>
   );
 }
-

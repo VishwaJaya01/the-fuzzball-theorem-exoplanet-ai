@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import type { HeaderProps, ApiStatus } from '@/lib/types';
+import React, { useState, useEffect } from "react";
+import type { HeaderProps, ApiStatus } from "@/lib/types";
 
 function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
   const [apiStatus, setApiStatus] = useState<ApiStatus>({
@@ -11,17 +11,21 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
   });
   const [showAboutModal, setShowAboutModal] = useState(false);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_API_URL_PROD;
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    process.env.NEXT_PUBLIC_BACKEND_API_URL_PROD;
 
   // Check API status on mount and periodically
   useEffect(() => {
     const checkApiStatus = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/health`, { method: 'GET' });
+        const response = await fetch(`${API_BASE_URL}/health`, {
+          method: "GET",
+        });
         const data = await response.json();
         setApiStatus({
           isOnline: response.ok,
-          modelVersion: data.modelVersion || 'v1.0.0',
+          modelVersion: data.modelVersion || "v1.0.0",
           lastChecked: new Date(),
         });
       } catch {
@@ -47,7 +51,7 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
   return (
     <>
       <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex flex-wrap items-center justify-between px-2 sm:px-6 py-4 gap-2">
           {/* Left: App Name & Tagline */}
           <div className="flex-1">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -65,20 +69,23 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
               <div
                 className={`w-2 h-2 rounded-full ${
                   apiStatus.isOnline
-                    ? 'bg-green-500 animate-pulse'
-                    : 'bg-red-500'
+                    ? "bg-green-500 animate-pulse"
+                    : "bg-red-500"
                 }`}
-                title={apiStatus.isOnline ? 'API Online' : 'API Offline'}
+                title={apiStatus.isOnline ? "API Online" : "API Offline"}
               />
               <span className="text-gray-600 dark:text-gray-400">
-                API {apiStatus.isOnline ? 'Online' : 'Offline'}
+                API {apiStatus.isOnline ? "Online" : "Offline"}
               </span>
             </div>
 
             {/* Model Version */}
             {apiStatus.modelVersion && (
               <div className="text-xs text-gray-600 dark:text-gray-400 border-l border-gray-300 dark:border-gray-600 pl-4">
-                Model: <span className="font-mono font-semibold">{apiStatus.modelVersion}</span>
+                Model:{" "}
+                <span className="font-mono font-semibold">
+                  {apiStatus.modelVersion}
+                </span>
               </div>
             )}
           </div>
@@ -175,10 +182,11 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
                     What is ExoFind?
                   </h3>
                   <p>
-                    ExoFind is an AI-powered tool for detecting exoplanet transits in TESS
-                    (Transiting Exoplanet Survey Satellite) light curve data. Using advanced
-                    machine learning models, we help astronomers and researchers identify
-                    potential exoplanet candidates.
+                    ExoFind is an AI-powered tool for detecting exoplanet
+                    transits in TESS (Transiting Exoplanet Survey Satellite)
+                    light curve data. Using advanced machine learning models, we
+                    help astronomers and researchers identify potential
+                    exoplanet candidates.
                   </p>
                 </section>
 
@@ -189,7 +197,10 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
                   <ol className="list-decimal list-inside space-y-2 ml-2">
                     <li>Upload your TESS light curve data (CSV format)</li>
                     <li>Our AI model analyzes the data for transit signals</li>
-                    <li>Review the results, including confidence scores and visualizations</li>
+                    <li>
+                      Review the results, including confidence scores and
+                      visualizations
+                    </li>
                     <li>Export or compare multiple analyses</li>
                   </ol>
                 </section>
@@ -199,7 +210,8 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
                     Documentation
                   </h3>
                   <p>
-                    For detailed documentation, API references, and examples, visit our{' '}
+                    For detailed documentation, API references, and examples,
+                    visit our{" "}
                     <a
                       href="#"
                       className="text-blue-600 dark:text-blue-400 hover:underline"
@@ -216,13 +228,16 @@ function Header({ onOpenAbout, onUploadClick }: HeaderProps) {
                   </h3>
                   <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 text-sm">
                     <p>
-                      <strong>Current Version:</strong> {apiStatus.modelVersion || 'N/A'}
+                      <strong>Current Version:</strong>{" "}
+                      {apiStatus.modelVersion || "N/A"}
                     </p>
                     <p>
-                      <strong>Architecture:</strong> Deep Neural Network with attention mechanism
+                      <strong>Architecture:</strong> Deep Neural Network with
+                      attention mechanism
                     </p>
                     <p>
-                      <strong>Training Data:</strong> TESS confirmed exoplanet catalog
+                      <strong>Training Data:</strong> TESS confirmed exoplanet
+                      catalog
                     </p>
                   </div>
                 </section>
